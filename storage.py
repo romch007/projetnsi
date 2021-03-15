@@ -25,6 +25,19 @@ class Storage:
         cursor.execute(schema[0])
         cursor.execute(schema[1])
         self.connection.commit()
+        print("Connected to database")
+
+    def get_nodes(self):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM nodes")
+        result = cursor.fetchall()
+        return result
+
+    def get_relations(self):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM relations")
+        result = cursor.fetchall()
+        return result
 
     def create_new_node(self, key: str):
         cursor = self.connection.cursor()
