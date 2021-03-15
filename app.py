@@ -1,5 +1,5 @@
 from storage import Storage
-from flask import Flask, g, jsonify
+from flask import Flask, g, jsonify, request
 
 app = Flask("projetnsi")
 
@@ -21,7 +21,10 @@ def health():
 @app.route("/getnodes", methods=["GET"])
 def get_nodes():
     nodes_result = get_db().get_nodes()
-    return jsonify(nodes_result)
+    json_result = []
+    for id, name in nodes_result:
+        json_result.append({"id": id, "name": name})
+    return jsonify(json_result)
 
 @app.route("/getrelations", methods=["GET"])
 def get_relations():
@@ -30,9 +33,18 @@ def get_relations():
 
 @app.route("/createnode", methods=["POST"])
 def create_node():
-    return "not implemented"
+    content = request.get_json()
+    node_name = content["name"]
+    get_db().create_new_node(node_name)
+    return "ok"
 
 @app.route("/createrelation", methods=["POST"])
 def create_relation():
-    return "not implemented"
+    content = request.get_json()
+    start_id = content["start"]
+    end_id = content["end"]
+    oriented = content["oriented"]
+    weight = content["weight"]
+    get_db().create_new_relation(start_id, end_id, oriented, weight)
+    return "ok"
 
