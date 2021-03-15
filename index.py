@@ -1,3 +1,3 @@
-from server import startHTTPserver
+from server import start_http_server
 
-startHTTPserver("0.0.0.0", 8080)
+start_http_server("0.0.0.0", 8080)
