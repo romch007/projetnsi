@@ -52,3 +52,27 @@ def create_relation():
     get_db().create_new_relation(start_id, end_id, oriented, weight)
     return "ok"
 
+@app.route("/updatenode/<int:node_id>", methods=["POST"])
+def update_node(node_id):
+    content = request.get_json()
+    name = content["name"]
+    get_db().update_node(node_id, name)
+    return "ok"
+
+@app.route("/updaterelation/<int:start_id>/<int:end_id>", methods=["POST"])
+def update_relation(start_id, end_id):
+    content = request.get_json()
+    oriented = content["oriented"]
+    weight = content["weight"]
+    get_db().update_relation(start_id, end_id, oriented, weight)
+    return "ok"
+
+@app.route("/deletenode/<int:node_id>", methods=["POST"])
+def delete_node(node_id):
+    get_db().delete_node(node_id)
+    return "ok"
+
+@app.route("/deleterelation/<int:start_id>/<int:end_id>", methods=["POST"])
+def delete_relation(start_id, end_id):
+    get_db().delete_relation(start_id, end_id)
+    return "ok"

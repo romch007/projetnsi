@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS nodes (
 """,
     """
 CREATE TABLE IF NOT EXISTS relations (
-    start_id INTEGER REFERENCES nodes(id),
-    end_id INTEGER REFERENCES nodes(id),
+    start_id INTEGER REFERENCES nodes(id) ON DELETE CASCADE,
+    end_id INTEGER REFERENCES nodes(id) ON DELETE CASCADE,
     oriented INTEGER DEFAULT 0,
     weight INTEGER DEFAULT 1
 );
@@ -49,4 +49,28 @@ class Storage:
         cursor.execute(
             "INSERT INTO relations (start_id, end_id, oriented, weight) VALUES (?, ?, ?, ?)", (start, end, oriented_int, weight)
         )
+        self.connection.commit()
+
+    def update_node(self, node_id: int, name: str):
+        cursor = self.connection.cursor()
+        cursor.execute("UPDATE nodes SET key = ? WHERE id = ?", (name, node_id))
+        self.connection.commit()
+
+    def update_relation(self, start_id: int, end_id: int, oriented: bool, weight: int):
+        cursor = self.connection.cursor()
+        oriented_int = 1 if oriented else 0
+        cursor.execute("""UPDATE relations
+            SET oriented = ?, weight = ?
+            WHERE start_id = ?
+            AND end_id = ?""", (oriented_int, weight, start_id, end_id))
+        self.connection.commit()
+
+    def delete_node(self, node_id: int):
+        cursor = self.connection.cursor()
+        cursor.execute("DELETE FROM nodes WHERE id = ?", (node_id,))
+        self.connection.commit()
+
+    def delete_relation(self, start_id: int, end_id: int):
+        cursor = self.connection.cursor()
+        cursor.execute("DELETE FROM relations WHERE start_id = ? AND end_id = ?", (start_id, end_id))
         self.connection.commit()
