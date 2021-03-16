@@ -47,6 +47,6 @@ class Storage:
         cursor = self.connection.cursor()
         oriented_int = 1 if oriented else 0
         cursor.execute(
-            "INSERT INTO relations (start_id, end_id, oriented, weigh) VALUES (?, ?, ?, ?)", (start, end, oriented_int, weight)
+            "INSERT INTO relations (start_id, end_id, oriented, weight) VALUES (?, ?, ?, ?)", (start, end, oriented_int, weight)
         )
         self.connection.commit()

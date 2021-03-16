@@ -20,16 +20,20 @@ def health():
 
 @app.route("/getnodes", methods=["GET"])
 def get_nodes():
-    nodes_result = get_db().get_nodes()
-    json_result = []
-    for id, name in nodes_result:
-        json_result.append({"id": id, "name": name})
+    result = get_db().get_nodes()
+    json_result = [{"id": id, "name": name} for id, name in result]
     return jsonify(json_result)
 
 @app.route("/getrelations", methods=["GET"])
 def get_relations():
-    relations_result = get_db().get_relations()
-    return jsonify(relations_result)
+    result = get_db().get_relations()
+    json_result = [{
+        "start_id": start,
+        "end_id": end,
+        "oriented": oriented == 1,
+        "weight": weight
+    } for start, end, oriented, weight in result]
+    return jsonify(json_result)
 
 @app.route("/createnode", methods=["POST"])
 def create_node():
@@ -41,8 +45,8 @@ def create_node():
 @app.route("/createrelation", methods=["POST"])
 def create_relation():
     content = request.get_json()
-    start_id = content["start"]
-    end_id = content["end"]
+    start_id = content["start_id"]
+    end_id = content["end_id"]
     oriented = content["oriented"]
     weight = content["weight"]
     get_db().create_new_relation(start_id, end_id, oriented, weight)
