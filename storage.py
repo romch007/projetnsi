@@ -4,7 +4,7 @@ schema = [
     """
 CREATE TABLE IF NOT EXISTS nodes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    key VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL
 );
 """,
     """
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS relations (
 
 
 class Storage:
-    def __init__(self, filename: str):
+    def __init__(self, filename):
         self.connection = sqlite3.connect(filename)
         cursor = self.connection.cursor()
         cursor.execute(schema[0])
@@ -38,12 +38,12 @@ class Storage:
         result = cursor.fetchall()
         return result
 
-    def create_new_node(self, key: str):
+    def create_new_node(self, name):
         cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO nodes (key) VALUES (?)", (key,))
+        cursor.execute("INSERT INTO nodes (name) VALUES (?)", (name,))
         self.connection.commit()
 
-    def create_new_relation(self, start: int, end: int, oriented: bool, weight: int):
+    def create_new_relation(self, start, end, oriented, weight):
         cursor = self.connection.cursor()
         oriented_int = 1 if oriented else 0
         cursor.execute(
@@ -52,12 +52,12 @@ class Storage:
         )
         self.connection.commit()
 
-    def update_node(self, node_id: int, name: str):
+    def update_node(self, node_id, name):
         cursor = self.connection.cursor()
         cursor.execute("UPDATE nodes SET key = ? WHERE id = ?", (name, node_id))
         self.connection.commit()
 
-    def update_relation(self, start_id: int, end_id: int, oriented: bool, weight: int):
+    def update_relation(self, start_id, end_id, oriented, weight):
         cursor = self.connection.cursor()
         oriented_int = 1 if oriented else 0
         cursor.execute(
@@ -69,12 +69,12 @@ class Storage:
         )
         self.connection.commit()
 
-    def delete_node(self, node_id: int):
+    def delete_node(self, node_id):
         cursor = self.connection.cursor()
         cursor.execute("DELETE FROM nodes WHERE id = ?", (node_id,))
         self.connection.commit()
 
-    def delete_relation(self, start_id: int, end_id: int):
+    def delete_relation(self, start_id, end_id):
         cursor = self.connection.cursor()
         cursor.execute(
             "DELETE FROM relations WHERE start_id = ? AND end_id = ?",
