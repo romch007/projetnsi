@@ -47,7 +47,8 @@ class Storage:
         cursor = self.connection.cursor()
         oriented_int = 1 if oriented else 0
         cursor.execute(
-            "INSERT INTO relations (start_id, end_id, oriented, weight) VALUES (?, ?, ?, ?)", (start, end, oriented_int, weight)
+            "INSERT INTO relations (start_id, end_id, oriented, weight) VALUES (?, ?, ?, ?)",
+            (start, end, oriented_int, weight),
         )
         self.connection.commit()
 
@@ -59,10 +60,13 @@ class Storage:
     def update_relation(self, start_id: int, end_id: int, oriented: bool, weight: int):
         cursor = self.connection.cursor()
         oriented_int = 1 if oriented else 0
-        cursor.execute("""UPDATE relations
+        cursor.execute(
+            """UPDATE relations
             SET oriented = ?, weight = ?
             WHERE start_id = ?
-            AND end_id = ?""", (oriented_int, weight, start_id, end_id))
+            AND end_id = ?""",
+            (oriented_int, weight, start_id, end_id),
+        )
         self.connection.commit()
 
     def delete_node(self, node_id: int):
@@ -72,5 +76,8 @@ class Storage:
 
     def delete_relation(self, start_id: int, end_id: int):
         cursor = self.connection.cursor()
-        cursor.execute("DELETE FROM relations WHERE start_id = ? AND end_id = ?", (start_id, end_id))
+        cursor.execute(
+            "DELETE FROM relations WHERE start_id = ? AND end_id = ?",
+            (start_id, end_id),
+        )
         self.connection.commit()
