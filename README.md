@@ -13,4 +13,4 @@ Lancer l'appli :
 flask run
 ```
 
-[Docs](DOCS.md)
+[Docs](docs/DOCS.md)
