@@ -1,5 +1,6 @@
-from storage import Storage
 from flask import Flask, g, jsonify, request
+from src.storage import Storage
+from src.algo import create_dict, breadth_first_search, depth_first_search
 
 app = Flask("projetnsi")
 
@@ -85,3 +86,21 @@ def delete_node(node_id):
 def delete_relation(start_id, end_id):
     get_db().delete_relation(start_id, end_id)
     return "ok"
+
+
+@app.route("/bfs/<int:start_node_id>", methods=["GET"])
+def bfs(start_node_id):
+    nodes = get_db().get_nodes()
+    relations = get_db().get_relations()
+    graph_dict = create_dict(nodes, relations)
+    result = breadth_first_search(start_node_id, graph_dict)
+    return jsonify(result)
+
+
+@app.route("/dfs/<int:start_node_id>", methods=["GET"])
+def dfs(start_node_id):
+    nodes = get_db().get_nodes()
+    relations = get_db().get_relations()
+    graph_dict = create_dict(nodes, relations)
+    result = depth_first_search(start_node_id, graph_dict)
+    return jsonify(result)
