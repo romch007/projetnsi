@@ -2,7 +2,7 @@ from flask import Flask, g, jsonify, request
 from src.storage import Storage
 from src.algo import create_dict, breadth_first_search, depth_first_search
 
-app = Flask("projetnsi")
+app = Flask("projetnsi", static_url_path="", static_folder="static")
 
 
 def get_db():
@@ -16,6 +16,11 @@ def teardown_db(exception):
     db = g.pop("db", None)
     if db is not None:
         db.connection.close()
+
+
+@app.route("/")
+def root():
+    return app.send_static_file("static/index.html")
 
 
 @app.route("/health", methods=["GET"])
