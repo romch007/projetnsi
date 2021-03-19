@@ -6,9 +6,10 @@ def create_dict(nodes, relations):
         for relation in relations:
             start = relation[0]
             end = relation[1]
+            oriented = relation[2] == 1
             if start == id:
                 neighbours.append(end)
-            elif end == id:
+            elif end == id and not oriented:
                 neighbours.append(start)
         result[id] = neighbours
     return result
