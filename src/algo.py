@@ -37,17 +37,15 @@ def breadth_first_search(start_node, grap_dict):
     """
     if start_node not in grap_dict.keys():
         raise RuntimeError("Node not in graph")
-    stack = []
-    already_crossed = []
-    stack.append(start_node)
-    while len(stack) != 0:
-        s = stack[0]
+    queue = [start_node]
+    path = []
+    while len(queue) != 0:
+        s = queue.pop(0)
+        path.append(s)
         for neighbour in grap_dict[s]:
-            if neighbour not in already_crossed and neighbour not in stack:
-                stack.append(neighbour)
-        stack.pop(0)
-        already_crossed.append(s)
-    return already_crossed
+            if neighbour not in queue:
+                queue.append(neighbour)
+    return path
 
 
 def depth_first_search(start_node, graph_dict):
@@ -56,15 +54,14 @@ def depth_first_search(start_node, graph_dict):
     """
     if start_node not in graph_dict.keys():
         raise RuntimeError("Node not in graph")
-    queue = []
+    stack = [start_node]
     already_crossed = []
-    queue.append(start_node)
-    while len(queue) != 0:
-        s = queue.pop()
-        for neighbour in graph_dict[s]:
-            if neighbour not in queue and neighbour not in already_crossed:
-                queue.append(neighbour)
+    while len(stack) != 0:
+        s = stack.pop()
         already_crossed.append(s)
+        for neighbour in graph_dict[s]:
+            if neighbour not in stack and neighbour not in already_crossed:
+                stack.append(neighbour)
     return already_crossed
 
 
