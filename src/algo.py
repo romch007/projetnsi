@@ -50,3 +50,4 @@ def depth_first_search(start_node, graph_dict):
                 queue.append(neighbour)
         already_crossed.append(s)
     return already_crossed
+
