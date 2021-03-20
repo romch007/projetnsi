@@ -14,6 +14,7 @@ def create_dict(nodes, relations):
         result[id] = neighbours
     return result
 
+
 def create_weighted_dict(nodes, relations):
     result = {}
     for node in nodes:
@@ -30,6 +31,7 @@ def create_weighted_dict(nodes, relations):
                 neighbours_dict[start] = weight
         result[id] = neighbours_dict
     return result
+
 
 def breadth_first_search(start_node, grap_dict):
     """
