@@ -1,6 +1,6 @@
 import unittest
 
-from algo import (
+from src.algo import (
     create_dict,
     create_weighted_dict,
     breadth_first_search,

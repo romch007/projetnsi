@@ -1,12 +1,14 @@
+import os
 from flask import Flask, g, jsonify, request
 from src.storage import Storage
 from src.algo import create_dict, breadth_first_search, depth_first_search
 
-app = Flask("projetnsi", static_url_path="", static_folder="static")
+app = Flask(__name__, static_url_path="", static_folder="static")
 
 
 def get_db():
     if "db" not in g:
+        filename = os.getenv("STORAGE") or "data.sqlite"
         g.db = Storage("data.sqlite")
     return g.db
 
