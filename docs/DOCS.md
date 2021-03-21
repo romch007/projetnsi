@@ -74,3 +74,29 @@ Modifie une relation en spécifiant l'id du noeud de départ et l'id du noeud d'
 - `POST /deleterelation/<start_id>/<end_id>`
 
 Supprime une relation en spécifiant l'id du noeud de départ et l'id du noeud d'arrivée
+
+## Parcours et algorithmes :
+
+- `GET /bfs/<start_id>`
+
+Effectue un parcours en largueur à partir du noeud donné, exemple de réponse :
+
+```json
+[1, 4, 3, 5, 2]
+```
+
+- `GET /dfs/<start_id>`
+
+Effectue un parcours en profondeur à partir du noeud donné, exemple de réponse :
+
+```json
+[7, 4, 2, 5, 1]
+```
+
+- `GET /dijkstra/<start_id>/<end_id>`
+
+Détermine le chemin le plus cours entre deux noeuds en utilisant l'algorithme de Dijkstra, exemple de réponse :
+
+```json
+[6, 7, 1, 3, 6]
+```
