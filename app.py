@@ -1,7 +1,13 @@
 import os
 from flask import Flask, g, jsonify, request
 from src.storage import Storage
-from src.algo import create_dict, breadth_first_search, depth_first_search
+from src.algo import (
+    create_dict,
+    create_weighted_dict,
+    breadth_first_search,
+    depth_first_search,
+    dijkstra,
+)
 
 app = Flask(__name__, static_url_path="", static_folder="static")
 
@@ -110,4 +116,13 @@ def dfs(start_node_id):
     relations = get_db().get_relations()
     graph_dict = create_dict(nodes, relations)
     result = depth_first_search(start_node_id, graph_dict)
+    return jsonify(result)
+
+
+@app.route("/dijkstra/<int:start_node_id>/<int:end_node_id>", methods=["GET"])
+def dijkstra_route(start_node_id, end_node_id):
+    nodes = get_db().get_nodes()
+    relations = get_db().get_relations()
+    graph_weighted_dict = create_weighted_dict(nodes, relations)
+    result = dijkstra(graph_weighted_dict, start_node_id, end_node_id)
     return jsonify(result)
