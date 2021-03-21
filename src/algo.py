@@ -45,11 +45,11 @@ def breadth_first_search(start_node, grap_dict):
     queue = [start_node]
     path = []
     while len(queue) != 0:
-        s = queue.pop(0)
-        path.append(s)
+        s = queue[0]
         for neighbour in grap_dict[s]:
-            if neighbour not in queue:
+            if neighbour not in queue and neighbour not in path:
                 queue.append(neighbour)
+        path.append(queue.pop(0))
     return path
 
 
