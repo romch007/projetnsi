@@ -15,7 +15,7 @@ app = Flask(__name__, static_url_path="", static_folder="static")
 def get_db():
     if "db" not in g:
         filename = os.getenv("STORAGE") or "data.sqlite"
-        g.db = Storage("data.sqlite")
+        g.db = Storage(filename)
     return g.db
 
 
