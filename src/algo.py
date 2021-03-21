@@ -101,8 +101,8 @@ def dijkstra(graph, start_node_id, end_node_id):
 
         if u == end_node_id:
             path = []
-            if previous[u] is not None or u == start_node_id:
-                while u is not None:
+            if previous[u] or u == start_node_id:
+                while u:
                     path.insert(0, u)
                     u = previous[u]
             return path
