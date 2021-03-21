@@ -44,9 +44,9 @@ def breadth_first_search(start_node, grap_dict):
         raise RuntimeError("Node not in graph")
     queue = [start_node]
     path = []
-    while len(queue) != 0:
-        s = queue[0]
-        for neighbour in grap_dict[s]:
+    while queue:
+        current_node = queue[0]
+        for neighbour in grap_dict[current_node]:
             if neighbour not in queue and neighbour not in path:
                 queue.append(neighbour)
         path.append(queue.pop(0))
@@ -61,23 +61,23 @@ def depth_first_search(start_node, graph_dict):
         raise RuntimeError("Node not in graph")
     stack = [start_node]
     already_crossed = []
-    while len(stack) != 0:
-        s = stack.pop()
-        already_crossed.append(s)
-        for neighbour in graph_dict[s]:
+    while stack:
+        current_node = stack.pop()
+        already_crossed.append(current_node)
+        for neighbour in graph_dict[current_node]:
             if neighbour not in stack and neighbour not in already_crossed:
                 stack.append(neighbour)
     return already_crossed
 
 
 def min_node_in_queue(queue, distances):
-    min_vertex = None
+    min_node = None
     min_distance = math.inf
-    for vertex in queue:
-        if distances[vertex] < min_distance:
-            min_distance = distances[vertex]
-            min_vertex = vertex
-    return min_vertex
+    for node in queue:
+        if distances[node] < min_distance:
+            min_distance = distances[node]
+            min_node = node
+    return min_node
 
 
 def dijkstra(graph, start_node_id, end_node_id):
@@ -95,20 +95,22 @@ def dijkstra(graph, start_node_id, end_node_id):
         queue.append(node)
     distances[start_node_id] = 0
 
-    while len(queue) != 0:
-        u = min_node_in_queue(queue, distances)
-        queue.remove(u)
+    while queue:
+        current_node = min_node_in_queue(queue, distances)
+        queue.remove(current_node)
 
-        if u == end_node_id:
+        if current_node == end_node_id:
             path = []
-            if previous[u] or u == start_node_id:
-                while u:
-                    path.insert(0, u)
-                    u = previous[u]
+            if previous[current_node] or current_node == start_node_id:
+                while current_node:
+                    path.insert(0, current_node)
+                    current_node = previous[current_node]
             return path
 
-        for v in graph[u].keys():
-            alt = distances[u] + graph[u][v]
-            if alt < distances[v]:
-                distances[v] = alt
-                previous[v] = u
+        for current_neighbour in graph[current_node].keys():
+            new_distance = (
+                distances[current_node] + graph[current_node][current_neighbour]
+            )
+            if new_distance < distances[current_neighbour]:
+                distances[current_neighbour] = new_distance
+                previous[current_neighbour] = current_node
