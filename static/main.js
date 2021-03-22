@@ -1,4 +1,5 @@
 const nodes = new Map();
+const relations = new Set();
 
 const stage = new Konva.Stage({
   container: "container",
@@ -10,9 +11,23 @@ const layer = new Konva.Layer();
 
 stage.add(layer);
 
+function isRelationInSet(relation) {
+  for (const relationInSet of relations) {
+    if (relationInSet[0] == relation[0] && relationInSet[1] == relation[1]) {
+      return true
+    }
+  }
+  return false
+}
+
+
 
 function drawNodeCircle(id, name, x, y) {
-  const group = new Konva.Group({ x, y, draggable: true });
+  const group = new Konva.Group({
+    x,
+    y,
+    draggable: true
+  });
   const circle = new Konva.Circle({
     radius: 40,
     fill: "grey",
@@ -25,12 +40,16 @@ function drawNodeCircle(id, name, x, y) {
     fontFamily: "Arial",
     align: "center",
     verticalAlign: "middle",
-   	width: circle.radius(),
+    width: circle.radius(),
     height: circle.radius(),
     offsetX: circle.radius() / 2,
     offsetY: circle.radius() / 2
   });
-  
+
+  group.on("dragend", () => {
+    console.log(`x: ${group.x()}, y: ${group.y()}, id: ${id}`)
+  })
+
   nodes.set(id, group);
 
   group.add(circle);
@@ -51,23 +70,24 @@ function drawRelation(startId, endId) {
   });
   layer.add(line);
   line.moveToBottom();
-  
+  relations.add(line);
+
   startNode.on("dragmove", event => {
-     line.points([
-     		startNode.x(),
-        startNode.y(),
-        line.points()[2],
-        line.points()[3]
-     ]);
-     //layer.draw()
+    line.points([
+      startNode.x(),
+      startNode.y(),
+      line.points()[2],
+      line.points()[3]
+    ]);
+    //layer.draw()
   });
   endNode.on("dragmove", event => {
-  	line.points([
-     		line.points()[0],
-        line.points()[1],
-        endNode.x(),
-        endNode.y()
-     ]);
+    line.points([
+      line.points()[0],
+      line.points()[1],
+      endNode.x(),
+      endNode.y()
+    ]);
   });
 }
 
