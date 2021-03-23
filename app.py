@@ -82,7 +82,10 @@ def create_relation():
 def update_node(node_id):
     content = request.get_json()
     name = content["name"]
-    get_db().update_node(node_id, name)
+    x = content["x"]
+    y = content["y"]
+    color = content["color"]
+    get_db().update_node(node_id, name, x, y, color)
     return "ok"
 
 

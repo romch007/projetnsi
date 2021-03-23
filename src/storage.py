@@ -59,9 +59,12 @@ class Storage:
         )
         self.connection.commit()
 
-    def update_node(self, node_id, name):
+    def update_node(self, node_id, name, x, y, color):
         cursor = self.connection.cursor()
-        cursor.execute("UPDATE nodes SET key = ? WHERE id = ?", (name, node_id))
+        cursor.execute(
+            "UPDATE nodes SET name = ?, x = ?, y = ?, color = ? WHERE id = ?",
+            (name, x, y, color, node_id),
+        )
         self.connection.commit()
 
     def update_relation(self, start_id, end_id, oriented, weight):
