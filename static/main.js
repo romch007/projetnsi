@@ -14,13 +14,11 @@ stage.add(layer);
 function isRelationInSet(relation) {
   for (const relationInSet of relations) {
     if (relationInSet[0] == relation[0] && relationInSet[1] == relation[1]) {
-      return true
+      return true;
     }
   }
-  return false
+  return false;
 }
-
-
 
 function drawNodeCircle(id, name, x, y) {
   const group = new Konva.Group({
@@ -47,8 +45,10 @@ function drawNodeCircle(id, name, x, y) {
   });
 
   group.on("dragend", () => {
-    console.log(`x: ${group.x()}, y: ${group.y()}, id: ${id}`)
-  })
+    if (useApi) {
+      updateNode(id, name, group.x(), group.y(), "grey");
+    }
+  });
 
   nodes.set(id, group);
 
@@ -65,8 +65,7 @@ function drawRelation(startId, endId) {
   const line = new Konva.Line({
     points: [startNode.x(), startNode.y(), endNode.x(), endNode.y()],
     stroke: "black",
-    strokeWidth: 3,
-
+    strokeWidth: 3
   });
   layer.add(line);
   line.moveToBottom();
@@ -79,21 +78,27 @@ function drawRelation(startId, endId) {
       line.points()[2],
       line.points()[3]
     ]);
-    //layer.draw()
   });
   endNode.on("dragmove", event => {
-    line.points([
-      line.points()[0],
-      line.points()[1],
-      endNode.x(),
-      endNode.y()
-    ]);
+    line.points([line.points()[0], line.points()[1], endNode.x(), endNode.y()]);
   });
 }
 
-drawNodeCircle(1, "A", 100, 100);
-drawNodeCircle(2, "B", 300, 300);
+const useApi = true;
 
-// drawRelation();
+if (useApi) {
+  getAllNodes()
+    .then(nodes => {
+      for (const node of nodes) {
+        drawNodeCircle(node.id, node.name, node.x, node.y);
+      }
 
-layer.draw();
+      return getAllRelations();
+    })
+    .then(relations => {
+      for (const relation of relations) {
+        drawRelation(relation.start_id, relation.end_id);
+      }
+      layer.draw();
+    });
+}
