@@ -39,7 +39,10 @@ def health():
 @app.route("/getnodes", methods=["GET"])
 def get_nodes():
     result = get_db().get_nodes()
-    json_result = [{"id": id, "name": name} for id, name in result]
+    json_result = [
+        {"id": id, "name": name, "x": x, "y": y, "color": color}
+        for id, name, x, y, color in result
+    ]
     return jsonify(json_result)
 
 
@@ -57,8 +60,11 @@ def get_relations():
 def create_node():
     content = request.get_json()
     node_name = content["name"]
-    get_db().create_new_node(node_name)
-    return "ok"
+    node_x = content["x"]
+    node_y = content["y"]
+    node_color = content["color"]
+    node_id = get_db().create_new_node(node_name, node_x, node_y, node_color)
+    return jsonify({"id": node_id})
 
 
 @app.route("/createrelation", methods=["POST"])

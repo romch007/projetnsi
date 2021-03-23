@@ -4,7 +4,10 @@ schema = [
     """
 CREATE TABLE IF NOT EXISTS nodes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    x INTEGER,
+    y INTEGER,
+    color VARCHAR(255)
 );
 """,
     """
@@ -38,10 +41,14 @@ class Storage:
         result = cursor.fetchall()
         return result
 
-    def create_new_node(self, name):
+    def create_new_node(self, name, x, y, color):
         cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO nodes (name) VALUES (?)", (name,))
+        cursor.execute(
+            "INSERT INTO nodes (name, x, y, color) VALUES (?, ?, ?, ?)",
+            (name, x, y, color),
+        )
         self.connection.commit()
+        return cursor.lastrowid
 
     def create_new_relation(self, start, end, oriented, weight):
         cursor = self.connection.cursor()
