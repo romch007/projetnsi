@@ -86,9 +86,11 @@ function drawNodeCircle(id, name, x, y) {
   layer.add(group);
 }
 
-function drawRelation(startId, endId, oriented) {
+function drawRelation(startId, endId, oriented, weight) {
   const startNode = nodes.get(startId);
   const endNode = nodes.get(endId);
+  
+  const group = new Konva.Group();
   
   const options = {
     points: makeCoords(startNode, endNode),
@@ -105,9 +107,19 @@ function drawRelation(startId, endId, oriented) {
   	line = new Konva.Line(options);
   }
   
-  layer.add(line);
+  group.add(line);
   line.moveToBottom();
-  relations.add(line);
+  
+  if (weight != 1) {
+  	const text = new Konva.Text({
+    	text: weight.toString(),
+      x: (startNode.x() + endNode.x()) / 2,
+      y: (startNode.y() + endNode.y()) / 2
+    })
+    group.add(text);
+  }
+  
+  relations.add(group);
 
   startNode.on("dragmove", event => {
     line.points(makeCoords(startNode, endNode));
@@ -147,7 +159,7 @@ function createNewRelation() {
         const circleOrText = event.target;
         const group = circleOrText.parent;
         const endId = searchNodeId(group);
-        drawRelation(startId, endId, true);
+        drawRelation(startId, endId, true, 8);
         layer.off("click");
       })
   })
