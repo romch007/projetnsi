@@ -96,7 +96,7 @@ function drawRelation(startId, endId, oriented, weight) {
   const startNode = nodes.get(startId);
   const endNode = nodes.get(endId);
 
-  const group = new Konva.Group();
+  // const group = new Konva.Group();
 
   const options = {
     points: makeCoords(startNode, endNode),
@@ -113,7 +113,7 @@ function drawRelation(startId, endId, oriented, weight) {
     line = new Konva.Line(options);
   }
 
-  group.add(line);
+  layer.add(line);
   line.moveToBottom();
 
   if (weight != 1) {
@@ -122,10 +122,10 @@ function drawRelation(startId, endId, oriented, weight) {
       x: (startNode.x() + endNode.x()) / 2,
       y: (startNode.y() + endNode.y()) / 2
     });
-    group.add(text);
+    // group.add(text);
   }
 
-  relations.add(group);
+  relations.add(line);
 
   startNode.on("dragmove", event => {
     line.points(makeCoords(startNode, endNode));
