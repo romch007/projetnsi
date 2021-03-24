@@ -1,6 +1,9 @@
 const nodes = new Map();
 const relations = new Set();
 
+let toolState = "idle";
+let startNodeId;
+
 const width = 1000;
 const height = 800;
 const radius = 40;
@@ -14,6 +17,42 @@ const stage = new Konva.Stage({
 const layer = new Konva.Layer();
 
 stage.add(layer);
+
+stage.on("click", event => {
+  if (toolState === "creating_node") {
+    const x = event.evt.layerX;
+    const y = event.evt.layerY;
+
+    const name = prompt("Nom du noeud ?");
+
+    const id = getId();
+
+    drawNodeCircle(id, name, x, y);
+
+    toolState = "idle";
+    layer.draw();
+  }
+});
+
+layer.on("click", event => {
+  if (toolState === "selecting_start_node") {
+    const circleOrText = event.target;
+    const group = circleOrText.parent;
+
+    startNodeId = searchNodeId(group);
+
+    toolState = "selecting_end_node";
+  } else if (toolState === "selecting_end_node") {
+    const circleOrText = event.target;
+    const group = circleOrText.parent;
+    const endId = searchNodeId(group);
+
+    drawRelation(startNodeId, endId, true, 8);
+
+    toolState = "idle";
+    layer.draw();
+  }
+});
 
 function makeCoords(startNode, endNode) {
   const coords = [];
@@ -139,42 +178,8 @@ function getId() {
   return 8;
 }
 
-function createNewNode() {
-  stage.on("click", event => {
-    const x = event.evt.layerX;
-    const y = event.evt.layerY;
-
-    const name = prompt("Nom du noeud ?");
-
-    const id = getId();
-
-    drawNodeCircle(id, name, x, y);
-
-    layer.draw();
-    stage.off("click");
-  });
-}
-
-function createNewRelation() {
-  layer.on("click", event => {
-    const circleOrText = event.target;
-    const group = circleOrText.parent;
-    const startId = searchNodeId(group);
-    layer.off("click");
-    layer.on("click", event => {
-      const circleOrText = event.target;
-      const group = circleOrText.parent;
-      const endId = searchNodeId(group);
-      drawRelation(startId, endId, true, 8);
-      layer.off("click");
-    });
-  });
-}
-
 drawNodeCircle(1, "A", 100, 100);
 drawNodeCircle(2, "B", 200, 200);
-layer.draw();
-createNewRelation();
 layer.draw();
 
 const useApi = false;
