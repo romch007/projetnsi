@@ -1,15 +1,34 @@
 const nodes = new Map();
 const relations = new Set();
 
+const width = 1000;
+const height = 800;
+const radius = 40;
+
 const stage = new Konva.Stage({
   container: "container",
-  width: 1000,
-  height: 800
+  width,
+  height
 });
 
 const layer = new Konva.Layer();
 
 stage.add(layer);
+
+function makeCoords(startNode, endNode) {
+	const coords = []
+	const startT = Math.atan2(endNode.y() - startNode.y(), endNode.x() - startNode.x())
+  const startX = radius * Math.cos(startT) + startNode.x();
+  const startY = radius * Math.sin(startT) + startNode.y();
+  coords.push(startX, startY);
+  
+  const endT = Math.atan2(startNode.y() - endNode.y(), startNode.x() - endNode.x())
+  const endX = radius * Math.cos(endT) + endNode.x();
+  const endY = radius * Math.sin(endT) + endNode.y();
+  coords.push(endX, endY);
+  
+  return coords;
+}
 
 function isRelationInSet(relation) {
   for (const relationInSet of relations) {
@@ -20,6 +39,15 @@ function isRelationInSet(relation) {
   return false;
 }
 
+function searchNodeId(nodeGroup) {
+	for (const [id, group] of nodes) {
+  	if (group._id == nodeGroup._id) {
+    	return id;
+    }
+  }
+  return -1;
+}
+
 function drawNodeCircle(id, name, x, y) {
   const group = new Konva.Group({
     x,
@@ -27,7 +55,7 @@ function drawNodeCircle(id, name, x, y) {
     draggable: true
   });
   const circle = new Konva.Circle({
-    radius: 40,
+    radius,
     fill: "grey",
     stroke: "black",
     strokeWidth: 2
@@ -58,33 +86,80 @@ function drawNodeCircle(id, name, x, y) {
   layer.add(group);
 }
 
-function drawRelation(startId, endId) {
+function drawRelation(startId, endId, oriented) {
   const startNode = nodes.get(startId);
   const endNode = nodes.get(endId);
-
-  const line = new Konva.Line({
-    points: [startNode.x(), startNode.y(), endNode.x(), endNode.y()],
+  
+  const options = {
+    points: makeCoords(startNode, endNode),
     stroke: "black",
-    strokeWidth: 3
-  });
+    strokeWidth: 3,
+    fill: "black"
+  };
+  
+  let line;
+  
+  if (oriented) {
+  	line = new Konva.Arrow(options);
+  } else {
+  	line = new Konva.Line(options);
+  }
+  
   layer.add(line);
   line.moveToBottom();
   relations.add(line);
 
   startNode.on("dragmove", event => {
-    line.points([
-      startNode.x(),
-      startNode.y(),
-      line.points()[2],
-      line.points()[3]
-    ]);
+    line.points(makeCoords(startNode, endNode));
   });
   endNode.on("dragmove", event => {
-    line.points([line.points()[0], line.points()[1], endNode.x(), endNode.y()]);
+    line.points(makeCoords(startNode, endNode));
   });
 }
 
-const useApi = true;
+function getId() {
+	return 8;
+}
+
+function createNewNode() {
+	stage.on("click", event => {
+  	const x = event.evt.layerX;
+    const y = event.evt.layerY;
+    
+    const name = prompt("Nom du noeud ?");
+
+ 		const id = getId();
+    
+    drawNodeCircle(id, name, x, y);
+    
+    layer.draw()
+  	stage.off("click")
+  })
+}
+
+function createNewRelation() {
+	layer.on("click", event => {
+      const circleOrText = event.target;
+      const group = circleOrText.parent;
+      const startId = searchNodeId(group);
+     	layer.off("click");
+      layer.on("click", event => {
+        const circleOrText = event.target;
+        const group = circleOrText.parent;
+        const endId = searchNodeId(group);
+        drawRelation(startId, endId, true);
+        layer.off("click");
+      })
+  })
+}
+
+drawNodeCircle(1, "A", 100, 100);
+drawNodeCircle(2, "B", 200, 200);
+layer.draw()
+createNewRelation()
+layer.draw()
+
+const useApi = false;
 
 if (useApi) {
   getAllNodes()
