@@ -60,7 +60,12 @@ async function deleteRelation(startId, endId) {
   return await response.text();
 }
 
-async function breadthFirstSearch(startId, endId) {
-  const response = await fetch(`/bfs/${startId}/${endId}`);
+async function breadthFirstSearch(startId) {
+  const response = await fetch(`/bfs/${startId}`);
+  return await response.json();
+}
+
+async function depthFirstSearch(startId) {
+  const response = await fetch(`/dfs/${startId}`);
   return await response.json();
 }

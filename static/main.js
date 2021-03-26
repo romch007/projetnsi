@@ -83,10 +83,11 @@ layer.on("click", event => {
       break;
     case "deleting_node":
       const id = getGroupIdFromEvent(event);
-
+      const group = nodes.get(id);
       if (nodes.has(id)) {
         if (useApi) {
           deleteNode(id).then(() => {
+            deleteRelationsRelatedTo(id);
             group.remove();
             layer.draw();
           });
@@ -119,6 +120,18 @@ layer.on("click", event => {
           }
         }
       }
+      break;
+    case "bfs":
+      startNodeId = getGroupIdFromEvent(event);
+      breadthFirstSearch(startNodeId).then(result => {
+        console.log(result);
+      });
+      break;
+    case "dfs":
+      startNodeId = getGroupIdFromEvent(event);
+      depthFirstSearch(startNodeId).then(result => {
+        console.log(result);
+      });
       break;
   }
 });
@@ -176,6 +189,15 @@ function searchNodeId(nodeGroup) {
   return -1;
 }
 
+function deleteRelationsRelatedTo(nodeId) {
+  for (const relation of relations) {
+    if (relation[0] == nodeId || relation[0] == nodeId) {
+      relation[3].remove();
+      relations.delete(relation);
+    }
+  }
+}
+
 function drawNodeCircle(id, name, x, y) {
   const group = new Konva.Group({
     x,
@@ -204,6 +226,26 @@ function drawNodeCircle(id, name, x, y) {
     if (useApi) {
       updateNode(id, name, group.x(), group.y(), "grey");
     }
+  });
+
+  group.on("mouseenter", () => {
+    if (
+      [
+        "creating_relation",
+        "editing_relation",
+        "deleting_relation",
+        "editing_node",
+        "deleting_node",
+        "bfs",
+        "dfs",
+        "dijkstra"
+      ].includes(toolState)
+    ) {
+      stage.container().style.cursor = "crosshair";
+    }
+  });
+  group.on("mouseleave", () => {
+    stage.container().style.cursor = "default";
   });
 
   nodes.set(id, group);
@@ -260,20 +302,16 @@ function drawRelation(startId, endId, oriented, weight) {
 
   relations.add(relationSet);
 
-  startNode.on("dragmove", event => {
+  const lineUpdateEvent = (startNode, endNode) => () => {
     line.points(makeCoords(startNode, endNode));
     if (weight != 1) {
       text.x((startNode.x() + endNode.x()) / 2);
       text.y((startNode.y() + endNode.y()) / 2);
     }
-  });
-  endNode.on("dragmove", event => {
-    line.points(makeCoords(startNode, endNode));
-    if (weight != 1) {
-      text.x((startNode.x() + endNode.x()) / 2);
-      text.y((startNode.y() + endNode.y()) / 2);
-    }
-  });
+  };
+
+  startNode.on("dragmove", lineUpdateEvent(startNode, endNode));
+  endNode.on("dragmove", lineUpdateEvent(startNode, endNode));
 }
 
 function getId() {

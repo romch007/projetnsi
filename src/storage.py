@@ -82,6 +82,9 @@ class Storage:
     def delete_node(self, node_id):
         cursor = self.connection.cursor()
         cursor.execute("DELETE FROM nodes WHERE id = ?", (node_id,))
+        cursor.execute(
+            "DELETE FROM relations WHERE start_id = ? OR end_id = ?", (node_id, node_id)
+        )
         self.connection.commit()
 
     def delete_relation(self, start_id, end_id):
