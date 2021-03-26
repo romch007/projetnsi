@@ -28,64 +28,98 @@ stage.on("click", event => {
 
     const name = prompt("Nom du noeud ?");
     if (name) {
-      const id = getId();
+      if (useApi) {
+        createNode(name, x, y, "black").then(id => {
+          drawNodeCircle(id, name, x, y);
 
-      drawNodeCircle(id, name, x, y);
+          layer.draw();
+        });
+      } else {
+        const id = getId();
 
-      layer.draw();
+        drawNodeCircle(id, name, x, y);
+
+        layer.draw();
+      }
     }
   }
 });
 
 layer.on("click", event => {
-  if (toolState === "creating_relation" && relationStep === "first") {
-    const circleOrText = event.target;
-    const group = circleOrText.parent;
+  switch (toolState) {
+    case "creating_relation":
+      if (relationStep === "first") {
+        startNodeId = getGroupIdFromEvent(event);
 
-    startNodeId = searchNodeId(group);
+        relationStep = "second";
+      } else {
+        const endId = getGroupIdFromEvent(event);
 
-    relationStep = "second";
-  } else if (toolState === "creating_relation" && relationStep === "second") {
-    const circleOrText = event.target;
-    const group = circleOrText.parent;
-    const endId = searchNodeId(group);
-
-    if (startNodeId != endId && !relationAlreadyExists([startNodeId, endId])) {
-      let weight = 1;
-      if (toolWeighted) {
-        weight = Number(prompt("Poids ?"));
+        if (
+          startNodeId != endId &&
+          !relationAlreadyExists([startNodeId, endId])
+        ) {
+          let weight = 1;
+          if (toolWeighted) {
+            weight = Number(prompt("Poids ?"));
+          }
+          if (useApi) {
+            createRelation(startNodeId, endId, toolOriented, weight).then(
+              () => {
+                drawRelation(startNodeId, endId, toolOriented, weight);
+                layer.draw();
+              }
+            );
+          } else {
+            drawRelation(startNodeId, endId, toolOriented, weight);
+            layer.draw();
+          }
+        }
+        layer.draw();
+        relationStep = "first";
       }
-      drawRelation(startNodeId, endId, toolOriented, weight);
-    }
-    layer.draw();
-    relationStep = "first";
-  } else if (toolState === "editing_node") {
-  } else if (toolState === "deleting_node") {
-    const circleOrText = event.target;
-    const group = circleOrText.parent;
-    const id = searchNodeId(group);
-    if (nodes.has(id)) {
-      group.remove();
-      layer.draw();
-    }
-  } else if (toolState === "deleting_relation" && relationStep === "first") {
-    const circleOrText = event.target;
-    const group = circleOrText.parent;
+      break;
+    case "editing_node":
+      break;
+    case "deleting_node":
+      const id = getGroupIdFromEvent(event);
 
-    startNodeId = searchNodeId(group);
+      if (nodes.has(id)) {
+        if (useApi) {
+          deleteNode(id).then(() => {
+            group.remove();
+            layer.draw();
+          });
+        } else {
+          group.remove();
+          layer.draw();
+        }
+      }
+      break;
+    case "deleting_relation":
+      if (relationStep === "first") {
+        startNodeId = getGroupIdFromEvent(event);
 
-    relationStep = "second";
-  } else if (toolState === "deleting_relation" && relationStep === "second") {
-    const circleOrText = event.target;
-    const group = circleOrText.parent;
-    const endId = searchNodeId(group);
-    const foundRelation = relationAlreadyExists([startNodeId, endId]);
-    if (foundRelation) {
-      foundRelation[3].remove();
-      relations.delete(foundRelation);
-    }
-    layer.draw();
-    relationStep = "first";
+        relationStep = "second";
+      } else {
+        const endId = getGroupIdFromEvent(event);
+        const foundRelation = relationAlreadyExists([startNodeId, endId]);
+        if (foundRelation) {
+          if (useApi) {
+            deleteRelation(startNodeId, endId).then(() => {
+              foundRelation[3].remove();
+              relations.delete(foundRelation);
+              layer.draw();
+              relationStep = "first";
+            });
+          } else {
+            relations.delete(foundRelation);
+            layer.draw();
+            relationStep = "first";
+          }
+        }
+      }
+      break;
   }
 });
 
@@ -108,6 +142,14 @@ function makeCoords(startNode, endNode) {
   coords.push(endX, endY);
 
   return coords;
+}
+
+function getGroupIdFromEvent(event) {
+  const circleOrText = event.target;
+  const group = circleOrText.parent;
+
+  nodeId = searchNodeId(group);
+  return nodeId;
 }
 
 function relationAlreadyExists(relation) {
@@ -238,11 +280,7 @@ function getId() {
   return Math.max(...nodes.keys()) + 1;
 }
 
-drawNodeCircle(1, "A", 100, 100);
-drawNodeCircle(2, "B", 200, 200);
-layer.draw();
-
-const useApi = false;
+const useApi = true;
 
 if (useApi) {
   getAllNodes()

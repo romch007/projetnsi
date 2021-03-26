@@ -1,13 +1,11 @@
 async function getAllNodes() {
   const response = await fetch("/getnodes");
-  const json = await response.json();
-  return json;
+  return await response.json();
 }
 
 async function getAllRelations() {
   const response = await fetch("/getrelations");
-  const json = await response.json();
-  return json;
+  return await response.json();
 }
 
 async function createNode(name, x, y, color) {
@@ -17,8 +15,7 @@ async function createNode(name, x, y, color) {
     method: "POST",
     body: JSON.stringify(payload)
   });
-  const { id } = await response.json();
-  return id;
+  return (await response.json()).id;
 }
 
 async function createRelation(startId, endId, oriented, weight) {
@@ -28,8 +25,7 @@ async function createRelation(startId, endId, oriented, weight) {
     method: "POST",
     body: JSON.stringify(payload)
   });
-  const text = await response.text();
-  return text;
+  return await response.text();
 }
 
 async function updateNode(id, name, x, y, color) {
@@ -39,8 +35,7 @@ async function updateNode(id, name, x, y, color) {
     method: "POST",
     body: JSON.stringify(payload)
   });
-  const text = await response.text();
-  return text;
+  return await response.text();
 }
 
 async function updateRelation(startId, endId, oriented, weight) {
@@ -50,18 +45,22 @@ async function updateRelation(startId, endId, oriented, weight) {
     method: "POST",
     body: JSON.stringify(payload)
   });
-  const text = await response.text();
-  return text;
+  return await response.text();
 }
 
 async function deleteNode(id) {
-  const response = await fetch(`/deletenode/${id}`);
-  const text = await response.text();
-  return text;
+  const response = await fetch(`/deletenode/${id}`, { method: "POST" });
+  return await response.text();
 }
 
-async function deleteRelation(id) {
-  const response = await fetch(`/deleterelation/${id}`);
-  const text = await response.text();
-  return text;
+async function deleteRelation(startId, endId) {
+  const response = await fetch(`/deleterelation/${startId}/${endId}`, {
+    method: "POST"
+  });
+  return await response.text();
+}
+
+async function breadthFirstSearch(startId, endId) {
+  const response = await fetch(`/bfs/${startId}/${endId}`);
+  return await response.json();
 }
