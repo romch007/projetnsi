@@ -241,7 +241,7 @@ function drawNodeCircle(id, name, x, y) {
         "dijkstra"
       ].includes(toolState)
     ) {
-      stage.container().style.cursor = "crosshair";
+      stage.container().style.cursor = "pointer";
     }
   });
   group.on("mouseleave", () => {
