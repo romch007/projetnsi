@@ -2,6 +2,9 @@ const nodes = new Map();
 const relations = new Set();
 
 let toolState = "idle";
+let toolOriented = false;
+let toolWeighted = false;
+let relationStep = "first";
 let startNodeId;
 
 const width = 1000;
@@ -24,33 +27,65 @@ stage.on("click", event => {
     const y = event.evt.layerY;
 
     const name = prompt("Nom du noeud ?");
+    if (name) {
+      const id = getId();
 
-    const id = getId();
+      drawNodeCircle(id, name, x, y);
 
-    drawNodeCircle(id, name, x, y);
-
-    toolState = "idle";
-    layer.draw();
+      layer.draw();
+    }
   }
 });
 
 layer.on("click", event => {
-  if (toolState === "selecting_start_node") {
+  if (toolState === "creating_relation" && relationStep === "first") {
     const circleOrText = event.target;
     const group = circleOrText.parent;
 
     startNodeId = searchNodeId(group);
 
-    toolState = "selecting_end_node";
-  } else if (toolState === "selecting_end_node") {
+    relationStep = "second";
+  } else if (toolState === "creating_relation" && relationStep === "second") {
     const circleOrText = event.target;
     const group = circleOrText.parent;
     const endId = searchNodeId(group);
 
-    drawRelation(startNodeId, endId, true, 8);
-
-    toolState = "idle";
+    if (startNodeId != endId && !relationAlreadyExists([startNodeId, endId])) {
+      let weight = 1;
+      if (toolWeighted) {
+        weight = Number(prompt("Poids ?"));
+      }
+      drawRelation(startNodeId, endId, toolOriented, weight);
+    }
     layer.draw();
+    relationStep = "first";
+  } else if (toolState === "editing_node") {
+  } else if (toolState === "deleting_node") {
+    const circleOrText = event.target;
+    const group = circleOrText.parent;
+    const id = searchNodeId(group);
+    if (nodes.has(id)) {
+      group.remove();
+      layer.draw();
+    }
+  } else if (toolState === "deleting_relation" && relationStep === "first") {
+    const circleOrText = event.target;
+    const group = circleOrText.parent;
+
+    startNodeId = searchNodeId(group);
+
+    relationStep = "second";
+  } else if (toolState === "deleting_relation" && relationStep === "second") {
+    const circleOrText = event.target;
+    const group = circleOrText.parent;
+    const endId = searchNodeId(group);
+    const foundRelation = relationAlreadyExists([startNodeId, endId]);
+    if (foundRelation) {
+      foundRelation[3].remove();
+      relations.delete(foundRelation);
+    }
+    layer.draw();
+    relationStep = "first";
   }
 });
 
@@ -75,13 +110,19 @@ function makeCoords(startNode, endNode) {
   return coords;
 }
 
-function isRelationInSet(relation) {
+function relationAlreadyExists(relation) {
   for (const relationInSet of relations) {
     if (relationInSet[0] == relation[0] && relationInSet[1] == relation[1]) {
-      return true;
+      return relationInSet;
+    } else if (
+      !relation[2] &&
+      relationInSet[0] == relation[1] &&
+      relationInSet[1] == relation[0]
+    ) {
+      return relationInSet;
     }
   }
-  return false;
+  return null;
 }
 
 function searchNodeId(nodeGroup) {
@@ -135,7 +176,7 @@ function drawRelation(startId, endId, oriented, weight) {
   const startNode = nodes.get(startId);
   const endNode = nodes.get(endId);
 
-  // const group = new Konva.Group();
+  const relationSet = [];
 
   const options = {
     points: makeCoords(startNode, endNode),
@@ -154,28 +195,47 @@ function drawRelation(startId, endId, oriented, weight) {
 
   layer.add(line);
   line.moveToBottom();
+  relationSet.push(startId, endId, oriented, line);
 
+  let text;
   if (weight != 1) {
-    const text = new Konva.Text({
+    text = new Konva.Text({
       text: weight.toString(),
       x: (startNode.x() + endNode.x()) / 2,
-      y: (startNode.y() + endNode.y()) / 2
+      y: (startNode.y() + endNode.y()) / 2,
+      fill: "black",
+      width: 30,
+      heigh: 10,
+      offsetX: 15,
+      offsetY: 5,
+      fontSize: 14,
+      align: "center",
+      verticalAlign: "middle"
     });
-    // group.add(text);
+    layer.add(text);
+    relationSet.push(text);
   }
 
-  relations.add(line);
+  relations.add(relationSet);
 
   startNode.on("dragmove", event => {
     line.points(makeCoords(startNode, endNode));
+    if (weight != 1) {
+      text.x((startNode.x() + endNode.x()) / 2);
+      text.y((startNode.y() + endNode.y()) / 2);
+    }
   });
   endNode.on("dragmove", event => {
     line.points(makeCoords(startNode, endNode));
+    if (weight != 1) {
+      text.x((startNode.x() + endNode.x()) / 2);
+      text.y((startNode.y() + endNode.y()) / 2);
+    }
   });
 }
 
 function getId() {
-  return 8;
+  return Math.max(...nodes.keys()) + 1;
 }
 
 drawNodeCircle(1, "A", 100, 100);
@@ -195,7 +255,12 @@ if (useApi) {
     })
     .then(relations => {
       for (const relation of relations) {
-        drawRelation(relation.start_id, relation.end_id);
+        drawRelation(
+          relation.start_id,
+          relation.end_id,
+          relation.oriented,
+          relation.weight
+        );
       }
       layer.draw();
     });

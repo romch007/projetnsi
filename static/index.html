@@ -6,15 +6,40 @@
     <title>Projet NSI Gaphe</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src="https://unpkg.com/konva@7.0.3/konva.min.js"></script>
+    <script src="konva.min.js"></script>
     <script defer src='main.js'></script>
     <script defer src="ui.js"></script>
     <script src='api.js'></script>
 </head>
 <body>
     <div class="topnav">
-        <button id="newpoint" class="tool">Nouveau point</button>
-        <button id="newrelation" class="tool">Nouvelle relation</button>
+        <div class="toolgroup">
+            <div class="toolgrouptitle">Noeuds :</div>
+            <button id="createnode" class="tool">Ajouter</button>
+            <button id="editnode" class="tool">Modifier</button>
+            <button id="deletenode" class="tool">Supprimer</button>
+        </div>
+        <div class="toolgroup">
+             <div class="toolgrouptitle">Relations :</div>
+            <button id="createrelation" class="tool">Ajouter</button>
+            <div class="check">
+                <input type="checkbox" id="orientedcheck" />
+                <label>Orientée</label>
+            </div>
+            <div class="check">
+                <input type="checkbox" id="weightedcheck" />
+                <label>Pondérée</label>
+            </div>
+            <button id="editrelation" class="tool">Modifier</button>
+            <button id="deleterelation" class="tool">Supprimer</button>
+        </div>
+        
+        <div class="toolgroup">
+            <div class="toolgrouptitle">Algorithmes :</div>
+            <button id="bfs" class="tool">Parcours en largeur</button>
+            <button id="dfs" class="tool">Parcours en profondeur</button>
+            <button id="dijkstra" class="tool">Dijkstra</button>
+        </div>
     </div>
     <div id="container"></div>
 </body>

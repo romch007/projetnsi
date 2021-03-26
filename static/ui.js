@@ -1,10 +1,65 @@
-const newPointButton = document.getElementById("newpoint");
-const newRelationButton = document.getElementById("newrelation");
+const createNodeButton = document.getElementById("createnode");
+const createRelationButton = document.getElementById("createrelation");
 
-newPointButton.addEventListener("click", () => {
-  toolState = "creating_node";
+const editNodeButton = document.getElementById("editnode");
+const editRelationButton = document.getElementById("editrelation");
+
+const deleteNodeButton = document.getElementById("deletenode");
+const deleteRelationButton = document.getElementById("deleterelation");
+
+const dfsButton = document.getElementById("dfs");
+const bfsButton = document.getElementById("bfs");
+const dijkstraButton = document.getElementById("dijkstra");
+
+const orientedCheckBox = document.getElementById("orientedcheck");
+const weightedCheckBox = document.getElementById("weightedcheck");
+
+const actions = {
+  creating_node: createNodeButton,
+  creating_relation: createRelationButton,
+  editing_node: editNodeButton,
+  editing_relation: editRelationButton,
+  deleting_node: deleteNodeButton,
+  deleting_relation: deleteRelationButton,
+  bfs: bfsButton,
+  dfs: dfsButton,
+  dijkstra: dijkstraButton
+};
+
+function selectOnly(targetAction) {
+  for (const [action, button] of Object.entries(actions)) {
+    if (targetAction === action) {
+      button.classList.add("selected");
+    } else {
+      button.classList.remove("selected");
+    }
+  }
+}
+
+function deselectAll() {
+  for (const button of Object.values(actions)) {
+    button.classList.remove("selected");
+  }
+}
+
+function updateToolState(currentTool) {
+  if (currentTool === toolState) {
+    toolState = "idle";
+    deselectAll();
+  } else {
+    toolState = currentTool;
+    selectOnly(currentTool);
+  }
+}
+
+for (const [action, button] of Object.entries(actions)) {
+  button.addEventListener("click", () => updateToolState(action));
+}
+
+orientedCheckBox.addEventListener("input", () => {
+  toolOriented = orientedCheckBox.checked;
 });
 
-newRelationButton.addEventListener("click", () => {
-  toolState = "selecting_start_node";
+weightedCheckBox.addEventListener("input", () => {
+  toolWeighted = weightedCheckBox.checked;
 });

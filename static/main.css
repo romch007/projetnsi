@@ -1,7 +1,36 @@
+html {
+  font-family: Arial;
+  font-size: 14px;
+}
+
+#container {
+  margin-top: 3px;
+}
+
+.konvajs-content {
+  border: 1px solid black;
+}
+
 /* Add a black background color to the top navigation */
 .topnav {
   background-color: rgb(124, 120, 120);
   overflow: hidden;
+  display: block;
+}
+
+.check {
+  display: inline-block;
+}
+
+.toolgroup {
+  display: inline-block;
+  margin: 2px;
+  border: 1px dashed black;
+}
+
+.toolgrouptitle {
+  margin-top: 3px;
+  margin-left: 3px;
 }
 
 /* Style the links inside the navigation bar */
@@ -9,9 +38,8 @@
   color: #f2f2f2;
   background-color: #333;
   text-align: center;
-  padding: 11px 13px;
-  margin: 7px 3px;
-  font-size: 17px;
+  padding: 9px 10px;
+  margin: 5px 3px;
   border: none;
   transition: 100ms;
   cursor: pointer;
@@ -21,4 +49,9 @@
 .tool:hover {
   background-color: #ddd;
   color: black;
+}
+
+.selected {
+  background-color: #ddd;
+  color: #2c50d0 !important;
 }
