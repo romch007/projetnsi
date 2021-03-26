@@ -28,7 +28,7 @@ def teardown_db(exception):
 
 @app.route("/")
 def root():
-    return app.send_static_file("static/index.html")
+    return app.send_static_file("index.html")
 
 
 @app.route("/health", methods=["GET"])

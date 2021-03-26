@@ -142,6 +142,7 @@ layer.on("click", event => {
         const endId = getGroupIdFromEvent(event);
 
         dijkstraAlgo(startNodeId, endId).then(result => {
+          relationStep = "first";
           return searchAnimation(result);
         });
       }
