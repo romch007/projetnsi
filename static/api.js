@@ -69,3 +69,8 @@ async function depthFirstSearch(startId) {
   const response = await fetch(`/dfs/${startId}`);
   return await response.json();
 }
+
+async function dijkstraAlgo(startId, endId) {
+  const response = await fetch(`/dijkstra/${startId}/${endId}`);
+  return await response.json();
+}

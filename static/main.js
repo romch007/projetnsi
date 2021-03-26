@@ -124,15 +124,27 @@ layer.on("click", event => {
     case "bfs":
       startNodeId = getGroupIdFromEvent(event);
       breadthFirstSearch(startNodeId).then(result => {
-        console.log(result);
+        return searchAnimation(result);
       });
       break;
     case "dfs":
       startNodeId = getGroupIdFromEvent(event);
       depthFirstSearch(startNodeId).then(result => {
-        console.log(result);
+        return searchAnimation(result);
       });
       break;
+    case "dijkstra":
+      if (relationStep === "first") {
+        startNodeId = getGroupIdFromEvent(event);
+
+        relationStep = "second";
+      } else {
+        const endId = getGroupIdFromEvent(event);
+
+        dijkstraAlgo(startNodeId, endId).then(result => {
+          return searchAnimation(result);
+        });
+      }
   }
 });
 
