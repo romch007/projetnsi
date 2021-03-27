@@ -204,8 +204,9 @@ function searchNodeId(nodeGroup) {
 
 function deleteRelationsRelatedTo(nodeId) {
   for (const relation of relations) {
-    if (relation[0] == nodeId || relation[0] == nodeId) {
+    if (relation[0] == nodeId || relation[1] == nodeId) {
       relation[3].remove();
+      if (relation[4]) relation[4].remove();
       relations.delete(relation);
     }
   }
