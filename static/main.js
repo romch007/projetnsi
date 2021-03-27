@@ -294,23 +294,38 @@ function drawRelation(startId, endId, oriented, weight) {
   line.moveToBottom();
   relationSet.push(startId, endId, oriented, line);
 
-  let text;
+  let textGroup;
   if (weight != 1) {
-    text = new Konva.Text({
-      text: weight.toString(),
+    const digitCount = weight.toString().length;
+    textGroup = new Konva.Group({
       x: (startNode.x() + endNode.x()) / 2,
-      y: (startNode.y() + endNode.y()) / 2,
+      y: (startNode.y() + endNode.y()) / 2
+    });
+    const width = 10 * digitCount;
+    const text = new Konva.Text({
+      text: weight.toString(),
       fill: "black",
-      width: 30,
-      heigh: 10,
-      offsetX: 15,
-      offsetY: 5,
+      width,
+      height: 15,
+      offsetX: width / 2,
+      offsetY: 7,
       fontSize: 14,
       align: "center",
       verticalAlign: "middle"
     });
-    layer.add(text);
-    relationSet.push(text);
+    const rect = new Konva.Rect({
+      fill: "white",
+      width: text.width(),
+      height: 15,
+      offsetX: text.offsetX(),
+      offsetY: text.offsetY()
+    });
+    textGroup.add(text);
+    textGroup.add(rect);
+
+    layer.add(textGroup);
+    text.moveUp();
+    relationSet.push(textGroup);
   }
 
   relations.add(relationSet);
@@ -318,8 +333,8 @@ function drawRelation(startId, endId, oriented, weight) {
   const lineUpdateEvent = (startNode, endNode) => () => {
     line.points(makeCoords(startNode, endNode));
     if (weight != 1) {
-      text.x((startNode.x() + endNode.x()) / 2);
-      text.y((startNode.y() + endNode.y()) / 2);
+      textGroup.x((startNode.x() + endNode.x()) / 2);
+      textGroup.y((startNode.y() + endNode.y()) / 2);
     }
   };
 
