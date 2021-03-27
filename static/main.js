@@ -80,11 +80,31 @@ layer.on("click", event => {
       }
       break;
     case "editing_node":
+      const nodeId = getGroupIdFromEvent(event);
+      const newName = prompt("Nouveau nom ?");
+      const clickedGroup = nodes.get(nodeId);
+      if (clickedGroup && newName) {
+        if (useApi) {
+          updateNode(
+            nodeId,
+            newName,
+            clickedGroup.x(),
+            clickedGroup.y(),
+            "grey"
+          ).then(() => {
+            clickedGroup.children[1].text(newName);
+            layer.draw();
+          });
+        } else {
+          clickedGroup.children[1].text(newName);
+          layer.draw();
+        }
+      }
       break;
     case "deleting_node":
       const id = getGroupIdFromEvent(event);
       const group = nodes.get(id);
-      if (nodes.has(id)) {
+      if (group) {
         if (useApi) {
           deleteNode(id).then(() => {
             deleteRelationsRelatedTo(id);
