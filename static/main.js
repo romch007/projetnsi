@@ -173,9 +173,7 @@ function drawNodeCircle(id, name, x, y) {
   });
 
   group.on("dragend", () => {
-    if (useApi) {
-      updateNode(id, name, group.x(), group.y(), "grey");
-    }
+    updateNode(id, name, group.x(), group.y(), "grey");
   });
 
   group.on("mouseenter", () => {
