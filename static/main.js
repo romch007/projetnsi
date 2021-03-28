@@ -40,104 +40,26 @@ stage.on("click", event => {
 layer.on("click", event => {
   switch (toolState) {
     case "creating_relation":
-      if (relationStep === "first") {
-        startNodeId = getGroupIdFromEvent(event);
-        highlightNodeById(startNodeId);
-        relationStep = "second";
-      } else {
-        const endId = getGroupIdFromEvent(event);
-        highlightNodeById(endId);
-        if (
-          startNodeId != endId &&
-          !relationAlreadyExists([startNodeId, endId])
-        ) {
-          let weight = 1;
-          if (toolWeighted) {
-            weight = Number(prompt("Poids ?"));
-          }
-          createRelation(startNodeId, endId, toolOriented, weight).then(() => {
-            drawRelation(startNodeId, endId, toolOriented, weight);
-            layer.draw();
-          });
-        }
-        resetHighlight([startNodeId, endId]);
-        relationStep = "first";
-      }
+      toolCreateRelation(event);
       break;
     case "editing_node":
-      const nodeId = getGroupIdFromEvent(event);
-      const newName = prompt("Nouveau nom ?");
-      const clickedGroup = nodes.get(nodeId);
-      if (clickedGroup && newName) {
-        updateNode(
-          nodeId,
-          newName,
-          clickedGroup.x(),
-          clickedGroup.y(),
-          "grey"
-        ).then(() => {
-          clickedGroup.children[1].text(newName);
-          layer.draw();
-        });
-      }
+      toolEditNode(event);
       break;
     case "deleting_node":
-      const id = getGroupIdFromEvent(event);
-      const group = nodes.get(id);
-      if (group) {
-        deleteNode(id).then(() => {
-          deleteRelationsRelatedTo(id);
-          group.remove();
-          layer.draw();
-        });
-      }
+      toolDeleteNode(event);
       break;
     case "deleting_relation":
-      if (relationStep === "first") {
-        startNodeId = getGroupIdFromEvent(event);
-        highlightNodeById(startNodeId);
-        relationStep = "second";
-      } else {
-        const endId = getGroupIdFromEvent(event);
-        highlightNodeById(endId);
-        const foundRelation = relationAlreadyExists([startNodeId, endId]);
-        if (foundRelation) {
-          deleteRelation(startNodeId, endId).then(() => {
-            foundRelation[3].remove();
-            relations.delete(foundRelation);
-            layer.draw();
-            relationStep = "first";
-          });
-        }
-        resetHighlight([startNodeId, endId]);
-      }
+      toolDeleteRelation(event);
       break;
     case "bfs":
-      startNodeId = getGroupIdFromEvent(event);
-      breadthFirstSearch(startNodeId).then(result => {
-        return searchAnimation(result);
-      });
+      toolBfs(event);
       break;
     case "dfs":
-      startNodeId = getGroupIdFromEvent(event);
-      depthFirstSearch(startNodeId).then(result => {
-        return searchAnimation(result);
-      });
+      toolDfs(event);
       break;
     case "dijkstra":
-      if (relationStep === "first") {
-        startNodeId = getGroupIdFromEvent(event);
-        highlightNodeById(startNodeId);
-        relationStep = "second";
-      } else {
-        const endId = getGroupIdFromEvent(event);
-        highlightNodeById(endId);
-        dijkstraAlgo(startNodeId, endId).then(result => {
-          relationStep = "first";
-          return searchAnimation(result);
-        });
-        resetHighlight([startNodeId, endId]);
-      }
+      toolDijkstra(event);
+      break;
   }
 });
 
