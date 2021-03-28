@@ -28,19 +28,11 @@ stage.on("click", event => {
 
     const name = prompt("Nom du noeud ?");
     if (name) {
-      if (useApi) {
-        createNode(name, x, y, "black").then(id => {
-          drawNodeCircle(id, name, x, y);
-
-          layer.draw();
-        });
-      } else {
-        const id = getId();
-
+      createNode(name, x, y, "black").then(id => {
         drawNodeCircle(id, name, x, y);
 
         layer.draw();
-      }
+      });
     }
   }
 });
@@ -50,11 +42,11 @@ layer.on("click", event => {
     case "creating_relation":
       if (relationStep === "first") {
         startNodeId = getGroupIdFromEvent(event);
-
+        highlightNodeById(startNodeId);
         relationStep = "second";
       } else {
         const endId = getGroupIdFromEvent(event);
-
+        highlightNodeById(endId);
         if (
           startNodeId != endId &&
           !relationAlreadyExists([startNodeId, endId])
@@ -63,19 +55,12 @@ layer.on("click", event => {
           if (toolWeighted) {
             weight = Number(prompt("Poids ?"));
           }
-          if (useApi) {
-            createRelation(startNodeId, endId, toolOriented, weight).then(
-              () => {
-                drawRelation(startNodeId, endId, toolOriented, weight);
-                layer.draw();
-              }
-            );
-          } else {
+          createRelation(startNodeId, endId, toolOriented, weight).then(() => {
             drawRelation(startNodeId, endId, toolOriented, weight);
             layer.draw();
-          }
+          });
         }
-        layer.draw();
+        resetHighlight([startNodeId, endId]);
         relationStep = "first";
       }
       break;
@@ -84,61 +69,47 @@ layer.on("click", event => {
       const newName = prompt("Nouveau nom ?");
       const clickedGroup = nodes.get(nodeId);
       if (clickedGroup && newName) {
-        if (useApi) {
-          updateNode(
-            nodeId,
-            newName,
-            clickedGroup.x(),
-            clickedGroup.y(),
-            "grey"
-          ).then(() => {
-            clickedGroup.children[1].text(newName);
-            layer.draw();
-          });
-        } else {
+        updateNode(
+          nodeId,
+          newName,
+          clickedGroup.x(),
+          clickedGroup.y(),
+          "grey"
+        ).then(() => {
           clickedGroup.children[1].text(newName);
           layer.draw();
-        }
+        });
       }
       break;
     case "deleting_node":
       const id = getGroupIdFromEvent(event);
       const group = nodes.get(id);
       if (group) {
-        if (useApi) {
-          deleteNode(id).then(() => {
-            deleteRelationsRelatedTo(id);
-            group.remove();
-            layer.draw();
-          });
-        } else {
+        deleteNode(id).then(() => {
+          deleteRelationsRelatedTo(id);
           group.remove();
           layer.draw();
-        }
+        });
       }
       break;
     case "deleting_relation":
       if (relationStep === "first") {
         startNodeId = getGroupIdFromEvent(event);
-
+        highlightNodeById(startNodeId);
         relationStep = "second";
       } else {
         const endId = getGroupIdFromEvent(event);
+        highlightNodeById(endId);
         const foundRelation = relationAlreadyExists([startNodeId, endId]);
         if (foundRelation) {
-          if (useApi) {
-            deleteRelation(startNodeId, endId).then(() => {
-              foundRelation[3].remove();
-              relations.delete(foundRelation);
-              layer.draw();
-              relationStep = "first";
-            });
-          } else {
+          deleteRelation(startNodeId, endId).then(() => {
+            foundRelation[3].remove();
             relations.delete(foundRelation);
             layer.draw();
             relationStep = "first";
-          }
+          });
         }
+        resetHighlight([startNodeId, endId]);
       }
       break;
     case "bfs":
@@ -156,15 +127,16 @@ layer.on("click", event => {
     case "dijkstra":
       if (relationStep === "first") {
         startNodeId = getGroupIdFromEvent(event);
-
+        highlightNodeById(startNodeId);
         relationStep = "second";
       } else {
         const endId = getGroupIdFromEvent(event);
-
+        highlightNodeById(endId);
         dijkstraAlgo(startNodeId, endId).then(result => {
           relationStep = "first";
           return searchAnimation(result);
         });
+        resetHighlight([startNodeId, endId]);
       }
   }
 });
@@ -188,6 +160,28 @@ function makeCoords(startNode, endNode) {
   coords.push(endX, endY);
 
   return coords;
+}
+
+function highlightNodeById(id) {
+  const nodeGroup = nodes.get(id);
+  const tween = new Konva.Tween({
+    node: nodeGroup.children[0],
+    duration: 0.1,
+    fill: "#de6666"
+  });
+  tween.play();
+}
+
+function resetHighlight(ids) {
+  for (const id of ids) {
+    const nodeGroup = nodes.get(id);
+    const tween = new Konva.Tween({
+      node: nodeGroup.children[0],
+      duration: 0.1,
+      fill: "grey"
+    });
+    tween.play();
+  }
 }
 
 function getGroupIdFromEvent(event) {
@@ -363,30 +357,22 @@ function drawRelation(startId, endId, oriented, weight) {
   endNode.on("dragmove", lineUpdateEvent(startNode, endNode));
 }
 
-function getId() {
-  return Math.max(...nodes.keys()) + 1;
-}
+getAllNodes()
+  .then(nodes => {
+    for (const node of nodes) {
+      drawNodeCircle(node.id, node.name, node.x, node.y);
+    }
 
-const useApi = true;
-
-if (useApi) {
-  getAllNodes()
-    .then(nodes => {
-      for (const node of nodes) {
-        drawNodeCircle(node.id, node.name, node.x, node.y);
-      }
-
-      return getAllRelations();
-    })
-    .then(relations => {
-      for (const relation of relations) {
-        drawRelation(
-          relation.start_id,
-          relation.end_id,
-          relation.oriented,
-          relation.weight
-        );
-      }
-      layer.draw();
-    });
-}
+    return getAllRelations();
+  })
+  .then(relations => {
+    for (const relation of relations) {
+      drawRelation(
+        relation.start_id,
+        relation.end_id,
+        relation.oriented,
+        relation.weight
+      );
+    }
+    layer.draw();
+  });
