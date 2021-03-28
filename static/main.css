@@ -22,6 +22,11 @@ html {
   display: inline-block;
 }
 
+.checkgroup {
+  display: inline-grid;
+  vertical-align: middle;
+}
+
 .toolgroup {
   display: inline-block;
   margin: 2px;
@@ -31,6 +36,8 @@ html {
 .toolgrouptitle {
   margin-top: 3px;
   margin-left: 3px;
+  text-align: center;
+  color: #000000;
 }
 
 /* Style the links inside the navigation bar */
@@ -43,10 +50,11 @@ html {
   border: none;
   transition: 100ms;
   cursor: pointer;
+  outline: none;
 }
 
 /* Change the color of links on hover */
-.tool:hover {
+.tool:hover, .tool:visited, .tool:focus {
   background-color: #ddd;
   color: black;
 }
