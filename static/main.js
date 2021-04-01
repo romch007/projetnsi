@@ -34,6 +34,8 @@ stage.on("click", event => {
         layer.draw();
       });
     }
+  } else if (toolState === "import_matrix") {
+    toolImportMatrix();
   }
 });
 

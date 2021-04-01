@@ -11,6 +11,8 @@ const dfsButton = document.getElementById("dfs");
 const bfsButton = document.getElementById("bfs");
 const dijkstraButton = document.getElementById("dijkstra");
 
+const importMatrixButton = document.getElementById("importmatrix");
+
 const orientedCheckBox = document.getElementById("orientedcheck");
 const weightedCheckBox = document.getElementById("weightedcheck");
 
@@ -23,7 +25,8 @@ const actions = {
   deleting_relation: deleteRelationButton,
   bfs: bfsButton,
   dfs: dfsButton,
-  dijkstra: dijkstraButton
+  dijkstra: dijkstraButton,
+  import_matrix: importMatrixButton
 };
 
 function selectOnly(targetAction) {

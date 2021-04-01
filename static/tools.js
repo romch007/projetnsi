@@ -101,3 +101,11 @@ function toolDijkstra(event) {
     resetHighlight([startNodeId, endId]);
   }
 }
+
+function toolImportMatrix() {
+  const text = prompt("Matrice ?");
+  const names = prompt("Noms (A,B,C) ?").split(",");
+  importMatrix(names, text).then(() => {
+    window.location.reload();
+  });
+}

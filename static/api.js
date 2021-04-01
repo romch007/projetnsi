@@ -74,3 +74,13 @@ async function dijkstraAlgo(startId, endId) {
   const response = await fetch(`/dijkstra/${startId}/${endId}`);
   return await response.json();
 }
+
+async function importMatrix(names, text) {
+  const payload = { names, text };
+  const response = await fetch(`/import/matrix`, {
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+  return await response.text();
+}
