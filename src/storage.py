@@ -35,6 +35,12 @@ class Storage:
         result = cursor.fetchall()
         return result
 
+    def get_node_by_name(self, name):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM nodes WHERE name = ?", (name,))
+        result = cursor.fetchone()[0]
+        return result
+
     def get_relations(self):
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM relations")
@@ -49,6 +55,22 @@ class Storage:
         )
         self.connection.commit()
         return cursor.lastrowid
+
+    def create_many_nodes_by_name(self, names):
+        cursor = self.connection.cursor()
+        cursor.executemany(
+            'INSERT INTO nodes (name, x, y, color) VALUES (?, 100, 100, "grey")',
+            names,
+        )
+        self.connection.commit()
+
+    def create_many_relations(self, relations):
+        cursor = self.connection.cursor()
+        cursor.executemany(
+            "INSERT INTO relations (start_id, end_id, oriented, weight) VALUES (?, ?, ?, ?)",
+            relations,
+        )
+        self.connection.commit()
 
     def create_new_relation(self, start, end, oriented, weight):
         cursor = self.connection.cursor()

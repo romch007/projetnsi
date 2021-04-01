@@ -8,6 +8,7 @@ from src.algo import (
     depth_first_search,
     dijkstra,
 )
+from src.importsfn import import_data_from_matrix
 
 app = Flask(__name__, static_url_path="", static_folder="static")
 
@@ -135,3 +136,12 @@ def dijkstra_route(start_node_id, end_node_id):
     graph_weighted_dict = create_weighted_dict(nodes, relations)
     result = dijkstra(graph_weighted_dict, start_node_id, end_node_id)
     return jsonify(result)
+
+
+@app.route("/import/matrix", methods=["POST"])
+def import_matrix():
+    content = request.get_json()
+    text = content["text"]
+    names = content["names"]
+    import_data_from_matrix(get_db(), names, text)
+    return "ok"
