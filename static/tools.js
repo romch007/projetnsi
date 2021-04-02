@@ -1,3 +1,17 @@
+function toolCreateNode(event) {
+  const x = event.evt.layerX;
+  const y = event.evt.layerY;
+
+  const name = prompt("Nom du noeud ?");
+  if (name) {
+    const args = [name, x, y, nodeColorPicker.value];
+    createNode(...args).then(id => {
+      drawNodeCircle(id, ...args);
+      layer.draw();
+    });
+  }
+}
+
 function toolCreateRelation(event) {
   if (relationStep === "first") {
     startNodeId = getGroupIdFromEvent(event);
@@ -8,11 +22,12 @@ function toolCreateRelation(event) {
     highlightNodeById(endId);
     if (startNodeId != endId && !relationAlreadyExists([startNodeId, endId])) {
       let weight = 1;
-      if (toolWeighted) {
+      if (weightedCheckBox.checked) {
         weight = Number(prompt("Poids ?"));
       }
-      createRelation(startNodeId, endId, toolOriented, weight).then(() => {
-        drawRelation(startNodeId, endId, toolOriented, weight);
+      const args = [startNodeId, endId, orientedCheckBox.checked, weight];
+      createRelation(...args).then(() => {
+        drawRelation(...args);
         layer.draw();
       });
     }
@@ -63,6 +78,7 @@ function toolDeleteRelation(event) {
     if (foundRelation) {
       deleteRelation(startNodeId, endId).then(() => {
         foundRelation[3].remove();
+        if (foundRelation[4]) foundRelation[4].remove();
         relations.delete(foundRelation);
         layer.draw();
         relationStep = "first";
@@ -104,8 +120,13 @@ function toolDijkstra(event) {
 
 function toolImportMatrix() {
   const text = prompt("Matrice ?");
-  const names = prompt("Noms (A,B,C) ?").split(",");
-  importMatrix(names, text).then(() => {
-    window.location.reload();
-  });
+  if (text) {
+    const namesRaw = prompt("Noms (A,B,C) ?");
+    if (namesRaw) {
+      const names = namesRaw.split(",");
+      importMatrix(names, text).then(() => {
+        window.location.reload();
+      });
+    }
+  }
 }

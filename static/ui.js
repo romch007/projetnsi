@@ -13,6 +13,8 @@ const dijkstraButton = document.getElementById("dijkstra");
 
 const importMatrixButton = document.getElementById("importmatrix");
 
+const nodeColorPicker = document.getElementById("nodecolor");
+
 const orientedCheckBox = document.getElementById("orientedcheck");
 const weightedCheckBox = document.getElementById("weightedcheck");
 
@@ -59,10 +61,4 @@ for (const [action, button] of Object.entries(actions)) {
   button.addEventListener("click", () => updateToolState(action));
 }
 
-orientedCheckBox.addEventListener("input", () => {
-  toolOriented = orientedCheckBox.checked;
-});
-
-weightedCheckBox.addEventListener("input", () => {
-  toolWeighted = weightedCheckBox.checked;
-});
+nodeColorPicker.value = "#808080";

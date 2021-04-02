@@ -4,10 +4,10 @@ async function searchAnimation(ids) {
     const tween = new Konva.Tween({
       node: node.children[0],
       easing: Konva.Easings.EaseOut,
-      fill: "#0d5e17",
+      shadowOpacity: 0.7,
       duration: 0.5
     });
-    await wait(400);
+    await wait(450);
     tween.play();
   }
   await wait(8000);
@@ -15,7 +15,7 @@ async function searchAnimation(ids) {
     const tween = new Konva.Tween({
       node: node.children[0],
       easing: Konva.Easings.StrongEaseOut,
-      fill: "grey",
+      shadowOpacity: 0,
       duration: 2
     });
     tween.play();

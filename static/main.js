@@ -4,6 +4,7 @@ const relations = new Set();
 let toolState = "idle";
 let toolOriented = false;
 let toolWeighted = false;
+let hexNodeColor = "#808080";
 let relationStep = "first";
 let startNodeId;
 
@@ -23,17 +24,7 @@ stage.add(layer);
 
 stage.on("click", event => {
   if (toolState === "creating_node") {
-    const x = event.evt.layerX;
-    const y = event.evt.layerY;
-
-    const name = prompt("Nom du noeud ?");
-    if (name) {
-      createNode(name, x, y, "black").then(id => {
-        drawNodeCircle(id, name, x, y);
-
-        layer.draw();
-      });
-    }
+    toolCreateNode(event);
   } else if (toolState === "import_matrix") {
     toolImportMatrix();
   }
@@ -91,7 +82,7 @@ function highlightNodeById(id) {
   const tween = new Konva.Tween({
     node: nodeGroup.children[0],
     duration: 0.1,
-    fill: "#de6666"
+    shadowOpacity: 0.5
   });
   tween.play();
 }
@@ -102,7 +93,7 @@ function resetHighlight(ids) {
     const tween = new Konva.Tween({
       node: nodeGroup.children[0],
       duration: 0.1,
-      fill: "grey"
+      shadowOpacity: 0
     });
     tween.play();
   }
@@ -150,7 +141,7 @@ function deleteRelationsRelatedTo(nodeId) {
   }
 }
 
-function drawNodeCircle(id, name, x, y) {
+function drawNodeCircle(id, name, x, y, color) {
   const group = new Konva.Group({
     x,
     y,
@@ -158,10 +149,15 @@ function drawNodeCircle(id, name, x, y) {
   });
   const circle = new Konva.Circle({
     radius,
-    fill: "grey",
+    fill: color,
     stroke: "black",
-    strokeWidth: 2
+    strokeWidth: 2,
+    shadowOpacity: 0,
+    shadowColor: "black",
+    shadowBlur: 10,
+    shadowOffset: { x: 5, y: 5 }
   });
+
   const text = new Konva.Text({
     text: name,
     fontSize: 15,
@@ -175,7 +171,7 @@ function drawNodeCircle(id, name, x, y) {
   });
 
   group.on("dragend", () => {
-    updateNode(id, name, group.x(), group.y(), "grey");
+    updateNode(id, name, group.x(), group.y(), group.children[0].fill());
   });
 
   group.on("mouseenter", () => {
@@ -282,7 +278,7 @@ function drawRelation(startId, endId, oriented, weight) {
 getAllNodes()
   .then(nodes => {
     for (const node of nodes) {
-      drawNodeCircle(node.id, node.name, node.x, node.y);
+      drawNodeCircle(node.id, node.name, node.x, node.y, node.color);
     }
 
     return getAllRelations();

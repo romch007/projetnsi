@@ -13,13 +13,9 @@ html {
 
 /* Add a black background color to the top navigation */
 .topnav {
-  background-color: rgb(124, 120, 120);
+  background-color: grey;
   overflow: hidden;
   display: block;
-}
-
-.check {
-  display: inline-block;
 }
 
 .checkgroup {
@@ -62,4 +58,14 @@ html {
 .selected {
   background-color: #ddd;
   color: #2c50d0 !important;
+}
+
+#nodecolorwrapper {
+  display: inline-grid;
+  vertical-align: middle;
+  margin: 3px;
+}
+
+#nodecolor {
+  background-color: #afadad;
 }
