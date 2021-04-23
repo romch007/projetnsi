@@ -57,8 +57,8 @@ async function dijkstraAlgo(startId, endId) {
   return await response.json();
 }
 
-async function importMatrix(names, text) {
-  const payload = { names, text };
+async function importMatrix(names, text, x, y) {
+  const payload = { names, text, x, y };
   const response = await post(`/import/matrix`, payload);
   return await response.text();
 }

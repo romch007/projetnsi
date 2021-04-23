@@ -19,7 +19,7 @@ def node_name_to_id(storage, name):
     return node
 
 
-def import_data_from_matrix(storage, names, text):
+def import_data_from_matrix(storage, names, text, initial_coords):
     matrix = eval_matrix(text)
     if len(matrix) != len(matrix[0]):
         raise RuntimeError("Invalid matrix lenght")
@@ -28,7 +28,7 @@ def import_data_from_matrix(storage, names, text):
 
     relations = []
 
-    storage.create_many_nodes_by_name(names)
+    storage.create_many_nodes_by_name(names, initial_coords)
 
     for i in range(len(matrix[0])):
         for j in range(len(matrix)):

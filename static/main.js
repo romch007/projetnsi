@@ -23,10 +23,13 @@ const layer = new Konva.Layer();
 stage.add(layer);
 
 stage.on("click", event => {
-  if (toolState === "creating_node") {
-    toolCreateNode(event);
-  } else if (toolState === "import_matrix") {
-    toolImportMatrix();
+  switch (toolState) {
+    case "creating_node":
+      toolCreateNode(event);
+      break;
+    case "import_matrix":
+      toolImportMatrix(event);
+      break;
   }
 });
 

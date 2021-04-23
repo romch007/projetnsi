@@ -143,5 +143,7 @@ def import_matrix():
     content = request.get_json()
     text = content["text"]
     names = content["names"]
-    import_data_from_matrix(get_db(), names, text)
+    x = content["x"]
+    y = content["y"]
+    import_data_from_matrix(get_db(), names, text, (x, y))
     return "ok"

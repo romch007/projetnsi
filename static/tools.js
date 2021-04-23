@@ -59,6 +59,7 @@ function toolDeleteNode(event) {
   const group = nodes.get(id);
   if (group) {
     deleteNode(id).then(() => {
+      nodes.delete(id);
       deleteRelationsRelatedTo(id);
       group.remove();
       layer.draw();
@@ -118,13 +119,15 @@ function toolDijkstra(event) {
   }
 }
 
-function toolImportMatrix() {
+function toolImportMatrix(event) {
+  const x = event.evt.layerX;
+  const y = event.evt.layerY;
   const text = prompt("Matrice ?");
   if (text) {
     const namesRaw = prompt("Noms (A,B,C) ?");
     if (namesRaw) {
       const names = namesRaw.split(",");
-      importMatrix(names, text).then(() => {
+      importMatrix(names, text, x, y).then(() => {
         window.location.reload();
       });
     }

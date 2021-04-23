@@ -56,11 +56,11 @@ class Storage:
         self.connection.commit()
         return cursor.lastrowid
 
-    def create_many_nodes_by_name(self, names):
+    def create_many_nodes_by_name(self, names, coords):
         cursor = self.connection.cursor()
         cursor.executemany(
-            'INSERT INTO nodes (name, x, y, color) VALUES (?, 100, 100, "grey")',
-            names,
+            'INSERT INTO nodes (name, x, y, color) VALUES (?, ?, ?, "grey")',
+            [(name, coords[0], coords[1]) for name in names],
         )
         self.connection.commit()
 
