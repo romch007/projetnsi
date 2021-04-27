@@ -1,3 +1,7 @@
+/**
+ * Crée un noeud (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolCreateNode(event) {
   const x = event.evt.layerX;
   const y = event.evt.layerY;
@@ -12,6 +16,10 @@ function toolCreateNode(event) {
   }
 }
 
+/**
+ * Crée une relation (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolCreateRelation(event) {
   if (relationStep === "first") {
     startNodeId = getGroupIdFromEvent(event);
@@ -36,6 +44,10 @@ function toolCreateRelation(event) {
   }
 }
 
+/**
+ * Modifie un noeud (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolEditNode(event) {
   const nodeId = getGroupIdFromEvent(event);
   const newName = prompt("Nouveau nom ?");
@@ -54,6 +66,10 @@ function toolEditNode(event) {
   }
 }
 
+/**
+ * Supprime un noeud (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolDeleteNode(event) {
   const id = getGroupIdFromEvent(event);
   const group = nodes.get(id);
@@ -67,6 +83,10 @@ function toolDeleteNode(event) {
   }
 }
 
+/**
+ * Supprime une relation (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolDeleteRelation(event) {
   if (relationStep === "first") {
     startNodeId = getGroupIdFromEvent(event);
@@ -89,6 +109,10 @@ function toolDeleteRelation(event) {
   }
 }
 
+/**
+ * Effectue le parcours en largeur (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolBfs(event) {
   startNodeId = getGroupIdFromEvent(event);
   breadthFirstSearch(startNodeId).then(result => {
@@ -96,6 +120,10 @@ function toolBfs(event) {
   });
 }
 
+/**
+ * Effectue le parcours en profondeur (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolDfs(event) {
   startNodeId = getGroupIdFromEvent(event);
   depthFirstSearch(startNodeId).then(result => {
@@ -103,6 +131,10 @@ function toolDfs(event) {
   });
 }
 
+/**
+ * Effectue l'algorithme de Dijkstra (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolDijkstra(event) {
   if (relationStep === "first") {
     startNodeId = getGroupIdFromEvent(event);
@@ -119,6 +151,10 @@ function toolDijkstra(event) {
   }
 }
 
+/**
+ * Importe une matrice d'adjacence (action utilisateur)
+ * @param {Object} event L'évènement généré par Konva
+ */
 function toolImportMatrix(event) {
   const x = event.evt.layerX;
   const y = event.evt.layerY;

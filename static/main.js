@@ -59,6 +59,12 @@ layer.on("click", event => {
   }
 });
 
+/**
+ * Calculer les coordoonées des extrémités d'une relation
+ * @param {Konva.Group} startNode Le premier noeud
+ * @param {Konva.Group} endNode Le deuxième noeud
+ * @returns {[number, number, number, number]} Les coordonées
+ */
 function makeCoords(startNode, endNode) {
   const coords = [];
   const startT = Math.atan2(
@@ -80,6 +86,10 @@ function makeCoords(startNode, endNode) {
   return coords;
 }
 
+/**
+ * Met visuellement en surbriance un noeud
+ * @param {string} id L'id du noeud
+ */
 function highlightNodeById(id) {
   const nodeGroup = nodes.get(id);
   const tween = new Konva.Tween({
@@ -90,6 +100,10 @@ function highlightNodeById(id) {
   tween.play();
 }
 
+/**
+ * Enlève la surbriance des noeuds donnés
+ * @param {Array<number>} ids Les ids des noeuds
+ */
 function resetHighlight(ids) {
   for (const id of ids) {
     const nodeGroup = nodes.get(id);
@@ -102,6 +116,11 @@ function resetHighlight(ids) {
   }
 }
 
+/**
+ * Récupère l'id du noeud cliqué lors d'un click
+ * @param {Object} event L'évènement généré par Konva
+ * @returns {number} L'id du noeud
+ */
 function getGroupIdFromEvent(event) {
   const circleOrText = event.target;
   const group = circleOrText.parent;
@@ -110,6 +129,11 @@ function getGroupIdFromEvent(event) {
   return nodeId;
 }
 
+/**
+ * Vérifie sur une relation existe déjà
+ * @param {[number, number, boolean, Konva.Group]} relation La relation recherchée
+ * @returns {[number, number, boolean, Konva.Group]} La relation trouvé
+ */
 function relationAlreadyExists(relation) {
   for (const relationInSet of relations) {
     if (relationInSet[0] == relation[0] && relationInSet[1] == relation[1]) {
@@ -125,6 +149,11 @@ function relationAlreadyExists(relation) {
   return null;
 }
 
+/**
+ * Récupère l'id d'un groupe Konva
+ * @param {Konva.Group} nodeGroup Le groupe Konva
+ * @returns {number} L'id du groupe, -1 si non trouvé
+ */
 function searchNodeId(nodeGroup) {
   for (const [id, group] of nodes) {
     if (group._id == nodeGroup._id) {
@@ -134,6 +163,10 @@ function searchNodeId(nodeGroup) {
   return -1;
 }
 
+/**
+ * Supprime les relations associées au noeud donné
+ * @param {number} nodeId L'id du noeud
+ */
 function deleteRelationsRelatedTo(nodeId) {
   for (const relation of relations) {
     if (relation[0] == nodeId || relation[1] == nodeId) {
@@ -144,6 +177,14 @@ function deleteRelationsRelatedTo(nodeId) {
   }
 }
 
+/**
+ * Dessiner et enregistre un nouveau noeud
+ * @param {number} id L'id du noeud
+ * @param {string} name Le nom du noeud
+ * @param {number} x L'abscisse initiale du noeud
+ * @param {number} y L'ordonnée initiale du noeud
+ * @param {string} color La couleur initiale du noeud
+ */
 function drawNodeCircle(id, name, x, y, color) {
   const group = new Konva.Group({
     x,
@@ -205,6 +246,13 @@ function drawNodeCircle(id, name, x, y, color) {
   layer.add(group);
 }
 
+/**
+ * Dessine et enregistre une nouvelle relation
+ * @param {number} startId L'id du noeud de départ
+ * @param {number} endId L'id du noeud d'arrivée
+ * @param {boolean} oriented Si la relation est orientée
+ * @param {number} weight Le poids de la relation
+ */
 function drawRelation(startId, endId, oriented, weight) {
   const startNode = nodes.get(startId);
   const endNode = nodes.get(endId);

@@ -31,6 +31,10 @@ const actions = {
   import_matrix: importMatrixButton
 };
 
+/**
+ * Sélectionne le menu donné et déselectionne tous les autres
+ * @param {string} targetAction Le nom du menu
+ */
 function selectOnly(targetAction) {
   for (const [action, button] of Object.entries(actions)) {
     if (targetAction === action) {
@@ -41,12 +45,19 @@ function selectOnly(targetAction) {
   }
 }
 
+/**
+ * Déselectionne tous les menus
+ */
 function deselectAll() {
   for (const button of Object.values(actions)) {
     button.classList.remove("selected");
   }
 }
 
+/**
+ * Met à jour le menu sélectionné
+ * @param {string} currentTool Le menu cliqué
+ */
 function updateToolState(currentTool) {
   if (currentTool === toolState) {
     toolState = "idle";
