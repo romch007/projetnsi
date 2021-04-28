@@ -1,6 +1,7 @@
 /**
  * Applique une animation visuelle aux noeuds donnés
  * @param {Array<number>} ids Les ids des noeuds (dans l'ordre)
+ * @async
  */
 async function searchAnimation(ids) {
   const nodesPath = ids.map(id => nodes.get(id));
