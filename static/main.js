@@ -232,6 +232,8 @@ function drawNodeCircle(id, name, x, y, color) {
       ].includes(toolState)
     ) {
       stage.container().style.cursor = "pointer";
+    } else if (toolState === "idle") {
+      stage.container().style.cursor = "move";
     }
   });
   group.on("mouseleave", () => {
