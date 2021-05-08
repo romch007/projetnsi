@@ -147,3 +147,6 @@ def import_matrix():
     y = content["y"]
     import_data_from_matrix(get_db(), names, text, (x, y))
     return "ok"
+
+if __name__ == "__main__":
+    app.run(port=5555)

@@ -1,6 +1,8 @@
 html {
-  font-family: Arial;
+  font-family: calibri;
   font-size: 14px;
+  background-image: url("background.jpg");
+  background-repeat: no-repeat;
 }
 
 #container {
@@ -8,12 +10,12 @@ html {
 }
 
 .konvajs-content {
-  border: 1px solid black;
+  border: 2px solid black;
+  
 }
 
 /* Add a black background color to the top navigation */
 .topnav {
-  background-color: grey;
   overflow: hidden;
   display: block;
 }
@@ -24,14 +26,16 @@ html {
 }
 
 .toolgroup {
+  background-color: #BFBFBF;
   display: inline-block;
-  margin: 2px;
+  margin: 5px;
   border: 1px dashed black;
 }
 
 .toolgrouptitle {
   margin-top: 3px;
   margin-left: 3px;
+  font-size: 17px;
   text-align: center;
   color: #000000;
 }
@@ -47,6 +51,7 @@ html {
   transition: 100ms;
   cursor: pointer;
   outline: none;
+  border-radius: 7px;
 }
 
 /* Change the color of links on hover */
