@@ -90,9 +90,9 @@ def dijkstra(graph, start_node_id, end_node_id):
         raise RuntimeError("End node not in graph")
 
     distances = {}
-    previous = {} # Dictionnaire permettant de stocker pour chaque noeud A le noeud B
-                  # qui a provoque la derniere mise a jour de distance du noeud A, soit {A: B}
-                  # (necessaire pour retrouver le chemin final)
+    previous = {}  # Dictionnaire permettant de stocker pour chaque noeud A le noeud B
+    # qui a provoque la derniere mise a jour de distance du noeud A, soit {A: B}
+    # (necessaire pour retrouver le chemin final)
     queue = []
 
     # Initialiser les noeuds et les distances
@@ -103,8 +103,10 @@ def dijkstra(graph, start_node_id, end_node_id):
     distances[start_node_id] = 0
 
     while queue:
-        current_node = min_node_in_queue(queue, distances) # Selectioner le noeud non parcouru
-                                                           # ayant la plus petite distance par rapport a l'origine
+        current_node = min_node_in_queue(
+            queue, distances
+        )  # Selectioner le noeud non parcouru
+        # ayant la plus petite distance par rapport a l'origine
         queue.remove(current_node)
 
         # Si le noeud courant est le noeud d'arrivee,
