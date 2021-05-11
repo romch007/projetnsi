@@ -334,9 +334,7 @@ function fitStageIntoParentContainer() {
   const containerWidth = container.offsetWidth;
   const scale = containerWidth / width;
 
-  stage.width(width * scale);
-  // stage.height(height * scale);
-  // stage.scale({ x: scale, y: scale });
+  stage.width(width * scale * 0.6);
   stage.draw();
 }
 

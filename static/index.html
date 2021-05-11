@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -14,6 +15,7 @@
     <script src="anims.js"></script>
     <script src="tools.js"></script>
 </head>
+
 <body>
     <div class="topnav">
         <div class="toolgroup">
@@ -21,10 +23,14 @@
             <button id="createnode" class="tool">Ajouter</button>
             <button id="editnode" class="tool">Renommer</button>
             <button id="deletenode" class="tool">Supprimer</button>
+            <div class="node-radius">
+                <label for="Taille">Taille</label>
+                <input type="range" id="Taille" name="Taille" min="5" max="40">
+            </div>
             <div id="nodecolorwrapper">
                 <div class="colorrow">
-                    <input id="nodecolor" type="color">
                     <span>Couleur</span>
+                    <input id="nodecolor" type="color">
                 </div>
             </div>
         </div>
@@ -44,19 +50,33 @@
             <button id="editrelation" class="tool">Modifier</button>
             <button id="deleterelation" class="tool">Supprimer</button>
         </div>
-        
         <div class="toolgroup">
             <div class="toolgrouptitle">Algorithmes :</div>
             <button id="bfs" class="tool">Parcours en largeur</button>
             <button id="dfs" class="tool">Parcours en profondeur</button>
             <button id="dijkstra" class="tool">Dijkstra</button>
         </div>
+    </div>
 
-        <div class="toolgroup">
-            <div class="toolgrouptitle">Importation :</div>
-            <button id="importmatrix" class="tool">Depuis matrice d'adjacence</button>
+    <div class="right-column">
+        <div class="algout">
+            <p>Sortie de l'algorithme:</p>
+        </div>
+        <div class="matrix">
+            Rentrez votre matrice:<br>
+            <textarea placeholder="Votre matrice"></textarea>
+            <div><button id="importmatrix" class="tool">Importer</button></div>
         </div>
     </div>
+
     <div id="container"></div>
+
+    <div class="footer">
+        Application développée par:
+        Romin Chardini,
+        Batiste Julien,
+        Eliott Flavier
+    </div>
 </body>
+
 </html>
