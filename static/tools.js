@@ -122,12 +122,24 @@ function toolDeleteRelation(event) {
 }
 
 /**
+ * Met à jour le champ de sortie d'algorithme
+ * @param {Array<number>} ids Les ids des noeuds
+ */
+function updateAlgoOutText(ids) {
+  const text = `[${ids
+    .map(id => nodes.get(id).children[1].text())
+    .join(", ")}]`;
+  algoOutText.innerText = text;
+}
+
+/**
  * Effectue le parcours en largeur (action utilisateur)
  * @param {Object} event L'évènement généré par Konva
  */
 function toolBfs(event) {
   startNodeId = getGroupIdFromEvent(event);
   breadthFirstSearch(startNodeId).then(result => {
+    updateAlgoOutText(result);
     return searchAnimation(result);
   });
 }
@@ -139,6 +151,7 @@ function toolBfs(event) {
 function toolDfs(event) {
   startNodeId = getGroupIdFromEvent(event);
   depthFirstSearch(startNodeId).then(result => {
+    updateAlgoOutText(result);
     return searchAnimation(result);
   });
 }
@@ -157,6 +170,7 @@ function toolDijkstra(event) {
     highlightNodeById(endId);
     dijkstraAlgo(startNodeId, endId).then(result => {
       relationStep = "first";
+      updateAlgoOutText(result);
       return searchAnimation(result);
     });
     resetHighlight([startNodeId, endId]);
@@ -170,7 +184,7 @@ function toolDijkstra(event) {
 function toolImportMatrix(event) {
   const x = event.evt.layerX;
   const y = event.evt.layerY;
-  const text = prompt("Matrice ?");
+  const text = matrixTextInput.value;
   if (text) {
     const namesRaw = prompt("Noms (A,B,C) ?");
     if (namesRaw) {

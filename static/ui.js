@@ -12,6 +12,7 @@ const bfsButton = document.getElementById("bfs");
 const dijkstraButton = document.getElementById("dijkstra");
 
 const importMatrixButton = document.getElementById("importmatrix");
+const matrixTextInput = document.getElementById("matrix-input");
 
 const nodeColorPicker = document.getElementById("nodecolor");
 
@@ -19,6 +20,8 @@ const nodeRadiusSlider = document.getElementById("node-radius-input");
 
 const orientedCheckBox = document.getElementById("orientedcheck");
 const weightedCheckBox = document.getElementById("weightedcheck");
+
+const algoOutText = document.getElementById("out");
 
 const actions = {
   creating_node: createNodeButton,
@@ -78,6 +81,6 @@ nodeRadiusSlider.addEventListener("input", () => {
   resizeNodes(nodeRadiusSlider.value);
 });
 
-nodeRadiusSlider.value = radius;
+nodeRadiusSlider.value = 40;
 
 nodeColorPicker.value = "#808080";

@@ -99,6 +99,13 @@ html {
   display: block;
   border-radius: 4px;
 }
+
+#out {
+  font-family: Consolas;
+  font-size: 15px;
+  padding: 5px;
+}
+
 .matrix {
   margin-top: 10px;
   border: 2px solid black;
