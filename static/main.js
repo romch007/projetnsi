@@ -328,6 +328,21 @@ function drawRelation(startId, endId, oriented, weight) {
   endNode.on("dragmove", lineUpdateEvent(startNode, endNode));
 }
 
+function fitStageIntoParentContainer() {
+  const container = document.querySelector("#container");
+
+  const containerWidth = container.offsetWidth;
+  const scale = containerWidth / width;
+
+  stage.width(width * scale);
+  // stage.height(height * scale);
+  // stage.scale({ x: scale, y: scale });
+  stage.draw();
+}
+
+fitStageIntoParentContainer();
+window.addEventListener("resize", fitStageIntoParentContainer);
+
 getAllNodes()
   .then(nodes => {
     for (const node of nodes) {
