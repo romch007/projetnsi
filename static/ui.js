@@ -15,6 +15,8 @@ const importMatrixButton = document.getElementById("importmatrix");
 
 const nodeColorPicker = document.getElementById("nodecolor");
 
+const nodeRadiusSlider = document.getElementById("node-radius-input");
+
 const orientedCheckBox = document.getElementById("orientedcheck");
 const weightedCheckBox = document.getElementById("weightedcheck");
 
@@ -71,5 +73,11 @@ function updateToolState(currentTool) {
 for (const [action, button] of Object.entries(actions)) {
   button.addEventListener("click", () => updateToolState(action));
 }
+
+nodeRadiusSlider.addEventListener("input", () => {
+  resizeNodes(nodeRadiusSlider.value);
+});
+
+nodeRadiusSlider.value = radius;
 
 nodeColorPicker.value = "#808080";

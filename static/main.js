@@ -10,7 +10,7 @@ let startNodeId;
 
 const width = 1000;
 const height = 800;
-const radius = 40;
+let radius = 40;
 
 const stage = new Konva.Stage({
   container: "container",
@@ -324,6 +324,10 @@ function drawRelation(startId, endId, oriented, weight) {
     }
   };
 
+  nodeRadiusSlider.addEventListener(
+    "input",
+    lineUpdateEvent(startNode, endNode)
+  );
   startNode.on("dragmove", lineUpdateEvent(startNode, endNode));
   endNode.on("dragmove", lineUpdateEvent(startNode, endNode));
 }

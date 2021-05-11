@@ -17,6 +17,18 @@ function toolCreateNode(event) {
 }
 
 /**
+ * Redimensionne tous les noeuds
+ * @param {number} radius Le nouveau rayon
+ */
+function resizeNodes(newRadius) {
+  radius = newRadius;
+  for (const node of nodes.values()) {
+    node.children[0].radius(newRadius);
+  }
+  stage.draw();
+}
+
+/**
  * Crée une relation (action utilisateur)
  * @param {Object} event L'évènement généré par Konva
  */
