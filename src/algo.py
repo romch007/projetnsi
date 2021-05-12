@@ -128,3 +128,18 @@ def dijkstra(graph, start_node_id, end_node_id):
             if new_distance < distances[current_neighbour]:
                 distances[current_neighbour] = new_distance
                 previous[current_neighbour] = current_node
+
+
+def export_to_matrix(nodes, relations):
+    node_ids = [node[0] for node in nodes]
+    node_names = [node[1] for node in nodes]
+    n = len(nodes)
+    matrix = [[0] * n for _ in range(n)]
+    for start_id, end_id, oriented, _ in relations:
+        target_start_node = node_ids.index(start_id)
+        target_end_node = node_ids.index(end_id)
+
+        matrix[target_start_node][target_end_node] = 1
+        if not oriented:
+            matrix[target_end_node][target_start_node] = 1
+    return matrix, node_names

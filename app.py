@@ -7,6 +7,7 @@ from src.algo import (
     breadth_first_search,
     depth_first_search,
     dijkstra,
+    export_to_matrix
 )
 from src.importsfn import import_data_from_matrix
 
@@ -148,5 +149,23 @@ def import_matrix():
     import_data_from_matrix(get_db(), names, text, (x, y))
     return "ok"
 
+@app.route("/export/matrix", methods=["GET"])
+def export_matrix():
+    nodes = get_db().get_nodes()
+    relations = get_db().get_relations()
+    matrix, names = export_to_matrix(nodes, relations)
+    result = {
+        "matrix": matrix,
+        "names": names
+    }
+    return jsonify(result)
+
+@app.route("/export/list", methods=["GET"])
+def export_list():
+    nodes = get_db().get_nodes()
+    relations = get_db().get_relations()
+    graph_dict = create_dict(nodes, relations)
+    return jsonify(graph_dict)
+   
 if __name__ == "__main__":
     app.run(port=5555)

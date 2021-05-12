@@ -195,3 +195,24 @@ function toolImportMatrix(event) {
     }
   }
 }
+
+function toolExportMatrix() {
+  if (exportChooser.value === "matrix") {
+    exportMatrix().then(result => {
+      const { matrix, names } = result;
+      const namesText = `[${names.join(", ")}]`;
+      const matrixText = matrix.map(arr => `[${arr.join(", ")}],`).join("\n");
+      matrixTextInput.value = namesText + "\n\n" + matrixText;
+    });
+  } else if (exportChooser.value === "list") {
+    exportList().then(result => {
+      const listText =
+        "{\n" +
+        Object.entries(result)
+          .map(([name, list]) => `${name}: [${list.join(", ")}],`)
+          .join("\n") +
+        "\n}";
+      matrixTextInput.value = listText;
+    });
+  }
+}

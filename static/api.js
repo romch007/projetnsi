@@ -159,6 +159,26 @@ async function importMatrix(names, text, x, y) {
 }
 
 /**
+ * Exporte vers une matrice d'adjacence
+ * @returns {Promise<{matrix: Array<Array<0 | 1>>, names: Array<string>}>} La matrice
+ * @async
+ */
+async function exportMatrix() {
+  const response = await get("/export/matrix");
+  return await response.json();
+}
+
+/**
+ * Exporte vers une liste d'adjacence
+ * @returns {Promise<Object>} La liste
+ * @async
+ */
+async function exportList() {
+  const response = await get("/export/list");
+  return await response.json();
+}
+
+/**
  * Effectue une requête http GET
  * @param {string} url L'URL de destination
  * @returns {Promise<Object>} La réponse de la requête

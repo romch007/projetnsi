@@ -66,7 +66,16 @@
         <div class="matrix">
             Rentrez votre matrice:<br>
             <textarea id="matrix-input" placeholder="Votre matrice"></textarea>
-            <div><button id="importmatrix" class="tool">Importer</button> (cliquer sur le canvas)</div>
+            <div>
+                <select id="exportselect">
+                    <option value="matrix">Matrice d'adjacence</option>
+                    <option value="list">Liste d'adjacence</option>
+                </select>
+            </div>
+            <div>
+                <button id="exportmatrix" class="tool">Exporter</button>
+                <button id="importmatrix" class="tool">Importer</button> (cliquer sur le canvas)
+            </div>
         </div>
     </div>
 

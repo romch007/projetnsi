@@ -12,7 +12,9 @@ const bfsButton = document.getElementById("bfs");
 const dijkstraButton = document.getElementById("dijkstra");
 
 const importMatrixButton = document.getElementById("importmatrix");
+const exportMatrixButton = document.getElementById("exportmatrix");
 const matrixTextInput = document.getElementById("matrix-input");
+const exportChooser = document.getElementById("exportselect");
 
 const nodeColorPicker = document.getElementById("nodecolor");
 
@@ -84,3 +86,7 @@ nodeRadiusSlider.addEventListener("input", () => {
 nodeRadiusSlider.value = 40;
 
 nodeColorPicker.value = "#808080";
+
+exportMatrixButton.addEventListener("click", () => {
+  toolExportMatrix();
+});

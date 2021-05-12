@@ -208,9 +208,9 @@ function drawNodeCircle(id, name, x, y, color) {
     fontFamily: "Arial",
     align: "center",
     verticalAlign: "middle",
-    width: circle.radius(),
+    width: circle.radius() * 2,
     height: circle.radius(),
-    offsetX: circle.radius() / 2,
+    offsetX: circle.radius(),
     offsetY: circle.radius() / 2
   });
 

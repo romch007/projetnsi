@@ -7,6 +7,7 @@ from src.algo import (
     depth_first_search,
     dijkstra,
     min_node_in_queue,
+    export_to_matrix,
 )
 
 
@@ -117,6 +118,30 @@ class TestAlgo(unittest.TestCase):
         result = min_node_in_queue(queue, distances)
         expected_result = "D"
         self.assertEqual(expected_result, result)
+
+    def test_export_to_matrix(self):
+        nodes = [
+            (31, "1", 0, 0),
+            (32, "2", 0, 0),
+            (33, "3", 0, 0),
+            (34, "4", 0, 0),
+        ]
+        relations = [
+            (32, 31, True, 1),
+            (33, 32, True, 1),
+            (33, 34, True, 1),
+            (31, 34, True, 1),
+            (34, 32, True, 1),
+            (31, 33, True, 1),
+        ]
+        matrix = [
+            [0, 0, 1, 1],
+            [1, 0, 0, 0],
+            [0, 1, 0, 1],
+            [0, 1, 0, 0],
+        ]
+        matrix_result, _ = export_to_matrix(nodes, relations)
+        self.assertEqual(matrix, matrix_result)
 
 
 if __name__ == "__main__":
