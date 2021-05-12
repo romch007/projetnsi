@@ -206,9 +206,20 @@ function toolExportMatrix() {
     });
   } else if (exportChooser.value === "list") {
     exportList().then(result => {
+      const namesResults = {};
+      for (const [node, list] of Object.entries(result)) {
+        console.log(node);
+        const namesList = [];
+        const nodeName = nodes.get(parseInt(node)).children[1].text();
+        for (const id of list) {
+          const name = nodes.get(id).children[1].text();
+          namesList.push(name);
+        }
+        namesResults[nodeName] = namesList;
+      }
       const listText =
         "{\n" +
-        Object.entries(result)
+        Object.entries(namesResults)
           .map(([name, list]) => `${name}: [${list.join(", ")}],`)
           .join("\n") +
         "\n}";
