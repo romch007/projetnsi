@@ -282,14 +282,15 @@ function drawRelation(startId, endId, oriented, weight) {
 
   let textGroup;
   if (weight != 1) {
-    const digitCount = weight.toString().length;
+    const roundedWeight = Math.round(weight);
+    const digitCount = roundedWeight.toString().length;
     textGroup = new Konva.Group({
       x: (startNode.x() + endNode.x()) / 2,
       y: (startNode.y() + endNode.y()) / 2
     });
     const width = 10 * digitCount;
     const text = new Konva.Text({
-      text: weight.toString(),
+      text: roundedWeight.toString(),
       fill: "black",
       width,
       height: 15,
