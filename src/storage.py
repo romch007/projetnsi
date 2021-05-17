@@ -56,6 +56,14 @@ class Storage:
         self.connection.commit()
         return cursor.lastrowid
 
+    def create_many_nodes_by_id(self, nodes):
+        cursor = self.connection.cursor()
+        cursor.executemany(
+            'INSERT INTO nodes (id, x, y, name, color) VALUES (?, ?, ?, ?, "grey")',
+            nodes,
+        )
+        self.connection.commit()
+
     def create_many_nodes_by_name(self, names, coords):
         cursor = self.connection.cursor()
         cursor.executemany(
@@ -115,4 +123,10 @@ class Storage:
             "DELETE FROM relations WHERE start_id = ? AND end_id = ?",
             (start_id, end_id),
         )
+        self.connection.commit()
+
+    def delete_all(self):
+        cursor = self.connection.cursor()
+        cursor.execute("DELETE FROM relations")
+        cursor.execute("DELETE FROM nodes")
         self.connection.commit()

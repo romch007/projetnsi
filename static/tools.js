@@ -186,7 +186,7 @@ function toolImportMatrix(event) {
   const y = event.evt.layerY;
   const text = matrixTextInput.value;
   if (text) {
-    const namesRaw = prompt("Noms (A,B,C) ?");
+    const namesRaw = prompt("Noms ? de la forme: A,B,C");
     if (namesRaw) {
       const names = namesRaw.split(",");
       importMatrix(names, text, x, y).then(() => {
