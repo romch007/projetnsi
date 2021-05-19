@@ -52,6 +52,7 @@ def breadth_first_search(start_node, grap_dict):
         raise RuntimeError("Node not in graph")
     queue = [start_node]
     path = []
+    # Tant que la file n'est pas vide, on défile un noeud et on ajoute ses voisins à la file
     while queue:
         current_node = queue[0]
         for neighbour in grap_dict[current_node]:
@@ -69,6 +70,7 @@ def depth_first_search(start_node, graph_dict):
         raise RuntimeError("Node not in graph")
     stack = [start_node]
     already_crossed = []
+    # Tant que la pile n'est pas vide, on dépile un noeud et on ajouter ses voisins à la pile
     while stack:
         current_node = stack.pop()
         already_crossed.append(current_node)
@@ -84,6 +86,8 @@ def min_node_in_queue(queue, distances):
     """
     min_node = None
     min_distance = math.inf
+    # On parcours la pile à la recherche à la recherche du maximum,
+    # (algorithme classique de recherche de maximum en O(n))
     for node in queue:
         if distances[node] < min_distance:
             min_distance = distances[node]
