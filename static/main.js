@@ -8,51 +8,68 @@ let hexNodeColor = "#808080";
 let relationStep = "first";
 let startNodeId;
 
+// Définis la taille de kanvas (espace de dessin)
 const width = 1000;
 const height = 800;
 let radius = 40;
 
+// Crée l'espace de dessin
 const stage = new Konva.Stage({
   container: "container",
   width,
   height
 });
 
+// Crée un sous espace de dessin pour interagir avec les évenements(interraction avec l'utilisateur)
+// Le stage est un plan et le layer est un sous plan qui se surperpose au stage.
+// On interragie avec le plan le plus haut
 const layer = new Konva.Layer();
 
+// Ajoute ce sous niveau au Konvas
 stage.add(layer);
 
+// Lorsque l'utilisateur clique sur le Knovas (espace de dessin (grand fenetre blanche))), declanche l'évenement click
 stage.on("click", event => {
   switch (toolState) {
+    // Crée un nouveau point
     case "creating_node":
       toolCreateNode(event);
       break;
+    // Import la matrice à la position de l'évenement clique
     case "import_matrix":
       toolImportMatrix(event);
       break;
   }
 });
 
+// Lorsqu'on clique sur le sous espace de dessin
 layer.on("click", event => {
   switch (toolState) {
+    // Crée une relation lorqu'on clique sur un point
     case "creating_relation":
       toolCreateRelation(event);
       break;
+    // Modifie un point pour le renommer
     case "editing_node":
       toolEditNode(event);
       break;
+    // Supprime un point
     case "deleting_node":
       toolDeleteNode(event);
       break;
+    // Supprime une relation
     case "deleting_relation":
       toolDeleteRelation(event);
       break;
+    // Calcule et anime le parcours en largeur
     case "bfs":
       toolBfs(event);
       break;
+    // Calcule et anime le parcours profondeur
     case "dfs":
       toolDfs(event);
       break;
+    // Calcule et anime l'algorythme de dijstra
     case "dijkstra":
       toolDijkstra(event);
       break;
@@ -186,11 +203,14 @@ function deleteRelationsRelatedTo(nodeId) {
  * @param {string} color La couleur initiale du noeud
  */
 function drawNodeCircle(id, name, x, y, color) {
+  // Crée un nouveau groupe qui contient le cercle et texte
+  // Le groupe permet que le cercle et le texte partage les mêmes propriétés
   const group = new Konva.Group({
     x,
     y,
     draggable: true
   });
+  // Crée un cercle
   const circle = new Konva.Circle({
     radius,
     fill: color,
@@ -202,6 +222,7 @@ function drawNodeCircle(id, name, x, y, color) {
     shadowOffset: { x: 5, y: 5 }
   });
 
+  // Crée un nouveau texte
   const text = new Konva.Text({
     text: name,
     fontSize: 15,
@@ -214,10 +235,12 @@ function drawNodeCircle(id, name, x, y, color) {
     offsetY: circle.radius() / 2
   });
 
+  // Lorsque le groupe se fait déplacer on actualise sa position dans la base de donnée
   group.on("dragend", () => {
     updateNode(id, name, group.x(), group.y(), group.children[0].fill());
   });
 
+  // Change l'apparence du curseur lorqu'il est au-dessus du groupe
   group.on("mouseenter", () => {
     if (
       [
@@ -236,15 +259,17 @@ function drawNodeCircle(id, name, x, y, color) {
       stage.container().style.cursor = "move";
     }
   });
+  // Change l'apparence du curseur lorqu'il n'est plus au-dessus du groupe
   group.on("mouseleave", () => {
     stage.container().style.cursor = "default";
   });
 
+  // Enregistre le point dans le dictionnaire des points
   nodes.set(id, group);
-
+  // Ajoute au groupe le cercle et le texte
   group.add(circle);
   group.add(text);
-
+  // Ajoute le groupe au sous espace de dessin
   layer.add(group);
 }
 
@@ -333,6 +358,9 @@ function drawRelation(startId, endId, oriented, weight) {
   endNode.on("dragmove", lineUpdateEvent(startNode, endNode));
 }
 
+/**
+ * Redimensionne l'espace de dessin (Konvas)
+ */
 function fitStageIntoParentContainer() {
   const container = document.querySelector("#container");
 

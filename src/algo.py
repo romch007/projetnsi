@@ -2,23 +2,31 @@ import math
 
 
 def create_dict(nodes, relations):
+    """Crée une liste d'adjacence à partir d'une liste de noeuds et de relations"""
     result = {}
+    # Pour chaque noeud
     for node in nodes:
         id = node[0]
         neighbours = []
+        # Pour chaque relation
         for relation in relations:
             start = relation[0]
             end = relation[1]
             oriented = relation[2] == 1
+            # On vérifie si le noeud est concerné par la relation,
             if start == id:
+                # dans ce cas on l'ajoute l'autre noeud concerné dans la liste des voisins
                 neighbours.append(end)
             elif end == id and not oriented:
                 neighbours.append(start)
+        # finalement on ajoute le noeud et ses voisins au dictionnaire
         result[id] = neighbours
     return result
 
 
 def create_weighted_dict(nodes, relations):
+    """Crée une liste d'adjacence pondérée à partir d'une liste de noeuds et de relations"""
+    # Similaire à la fonction create_dict, sauf qu'on renseigne aussi les poids des relations
     result = {}
     for node in nodes:
         id = node[0]
@@ -90,9 +98,10 @@ def dijkstra(graph, start_node_id, end_node_id):
         raise RuntimeError("End node not in graph")
 
     distances = {}
-    previous = {}  # Dictionnaire permettant de stocker pour chaque noeud A le noeud B
-    # qui a provoque la derniere mise a jour de distance du noeud A, soit {A: B}
-    # (necessaire pour retrouver le chemin final)
+    # Dictionnaire permettant de stocker pour chaque noeud A le noeud B
+    # qui à provoqué la dernière mise à jour de distance du noeud A, soit {A: B}
+    # (nécessaire pour retrouver le chemin final)
+    previous = {}
     queue = []
 
     # Initialiser les noeuds et les distances
@@ -103,14 +112,12 @@ def dijkstra(graph, start_node_id, end_node_id):
     distances[start_node_id] = 0
 
     while queue:
-        current_node = min_node_in_queue(
-            queue, distances
-        )  # Selectioner le noeud non parcouru
-        # ayant la plus petite distance par rapport a l'origine
+        # Sélectionner le noeud non parcouru ayant la plus petite distance par rapport à l'origine
+        current_node = min_node_in_queue(queue, distances)
         queue.remove(current_node)
 
-        # Si le noeud courant est le noeud d'arrivee,
-        # utiliser le dico previous pour retrouver le chemin final (par iteration inverse)
+        # Si le noeud courant est le noeud d'arrivée,
+        # utiliser le dico previous pour retrouver le chemin final (par itération inverse)
         if current_node == end_node_id:
             path = []
             if previous[current_node] or current_node == start_node_id:
@@ -120,7 +127,7 @@ def dijkstra(graph, start_node_id, end_node_id):
             return path
 
         # Pour chaque voisin du noeud en cours,
-        # mettre a jour sa distance par rapport au noeud d'origine
+        # mettre à jour sa distance par rapport au noeud d'origine
         for current_neighbour in graph[current_node].keys():
             new_distance = (
                 distances[current_node] + graph[current_node][current_neighbour]
@@ -131,15 +138,23 @@ def dijkstra(graph, start_node_id, end_node_id):
 
 
 def export_to_matrix(nodes, relations):
+    """Exporte une liste de relations et de noeuds vers une matrice d'adjacence"""
+    # On génère une liste contenant les ids des noeuds
     node_ids = [node[0] for node in nodes]
+    # On génère une liste contenant les noms des noeuds
     node_names = [node[1] for node in nodes]
     n = len(nodes)
     matrix = [[0] * n for _ in range(n)]
+    # Pour chaque relation
     for start_id, end_id, oriented, _ in relations:
+        # On récupère l'id du noeud de départ
         target_start_node = node_ids.index(start_id)
+        # On récupère l'id du noeud d'arrivée
         target_end_node = node_ids.index(end_id)
 
+        # On met à 1 la bonne colonne
         matrix[target_start_node][target_end_node] = 1
         if not oriented:
+            # Si la relation n'est pas orientée on met à 1 la colonne symétriquement opposée
             matrix[target_end_node][target_start_node] = 1
     return matrix, node_names

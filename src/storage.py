@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS relations (
 
 class Storage:
     def __init__(self, filename):
+        # On initialise la connection avec la base de données
         self.connection = sqlite3.connect(filename)
         cursor = self.connection.cursor()
         cursor.execute(schema[0])
@@ -30,24 +31,28 @@ class Storage:
         self.connection.commit()
 
     def get_nodes(self):
+        """Récupère la liste des noeuds"""
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM nodes")
         result = cursor.fetchall()
         return result
 
     def get_node_by_name(self, name):
+        """Récupère un noeud par son nom"""
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM nodes WHERE name = ?", (name,))
         result = cursor.fetchone()[0]
         return result
 
     def get_relations(self):
+        """Récupère la liste des relations"""
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM relations")
         result = cursor.fetchall()
         return result
 
     def create_new_node(self, name, x, y, color):
+        """Crée un nouveau noeud"""
         cursor = self.connection.cursor()
         cursor.execute(
             "INSERT INTO nodes (name, x, y, color) VALUES (?, ?, ?, ?)",
@@ -57,6 +62,7 @@ class Storage:
         return cursor.lastrowid
 
     def create_many_nodes_by_id(self, nodes):
+        """Crée plusieurs noeuds en spécifiant leur id"""
         cursor = self.connection.cursor()
         cursor.executemany(
             'INSERT INTO nodes (id, x, y, name, color) VALUES (?, ?, ?, ?, "grey")',
@@ -65,6 +71,7 @@ class Storage:
         self.connection.commit()
 
     def create_many_nodes_by_name(self, names, coords):
+        """Crée plusieurs noeuds en spécifiant leur nom"""
         cursor = self.connection.cursor()
         cursor.executemany(
             'INSERT INTO nodes (name, x, y, color) VALUES (?, ?, ?, "grey")',
@@ -73,6 +80,7 @@ class Storage:
         self.connection.commit()
 
     def create_many_relations(self, relations):
+        """Crée plusieurs relations"""
         cursor = self.connection.cursor()
         cursor.executemany(
             "INSERT INTO relations (start_id, end_id, oriented, weight) VALUES (?, ?, ?, ?)",
@@ -81,6 +89,7 @@ class Storage:
         self.connection.commit()
 
     def create_new_relation(self, start, end, oriented, weight):
+        """Crée une nouvelle relations"""
         cursor = self.connection.cursor()
         oriented_int = 1 if oriented else 0
         cursor.execute(
@@ -90,6 +99,7 @@ class Storage:
         self.connection.commit()
 
     def update_node(self, node_id, name, x, y, color):
+        """Met à jour un noeud"""
         cursor = self.connection.cursor()
         cursor.execute(
             "UPDATE nodes SET name = ?, x = ?, y = ?, color = ? WHERE id = ?",
@@ -98,6 +108,7 @@ class Storage:
         self.connection.commit()
 
     def update_relation(self, start_id, end_id, oriented, weight):
+        """Met à jour une relation"""
         cursor = self.connection.cursor()
         oriented_int = 1 if oriented else 0
         cursor.execute(
@@ -110,6 +121,7 @@ class Storage:
         self.connection.commit()
 
     def delete_node(self, node_id):
+        """Supprime un noeud"""
         cursor = self.connection.cursor()
         cursor.execute("DELETE FROM nodes WHERE id = ?", (node_id,))
         cursor.execute(
@@ -118,6 +130,7 @@ class Storage:
         self.connection.commit()
 
     def delete_relation(self, start_id, end_id):
+        """Supprime une relation"""
         cursor = self.connection.cursor()
         cursor.execute(
             "DELETE FROM relations WHERE start_id = ? AND end_id = ?",
@@ -126,6 +139,7 @@ class Storage:
         self.connection.commit()
 
     def delete_all(self):
+        """Supprime l'ensemble des données de la base"""
         cursor = self.connection.cursor()
         cursor.execute("DELETE FROM relations")
         cursor.execute("DELETE FROM nodes")
