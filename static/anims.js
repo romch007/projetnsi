@@ -4,8 +4,10 @@
  * @async
  */
 async function searchAnimation(ids) {
+  // On récupère les groupes Konva à partir des ids des noeuds
   const nodesPath = ids.map(id => nodes.get(id));
   for (const node of nodesPath) {
+    // On lance pour chaque noeud l'animation avec un écart de 450 ms
     const tween = new Konva.Tween({
       node: node.children[0],
       easing: Konva.Easings.EaseOut,
@@ -16,6 +18,7 @@ async function searchAnimation(ids) {
     tween.play();
   }
   await wait(8000);
+  // Après 8 secondes on remet les noeuds à leurs paramètres par défaut
   for (const node of nodesPath) {
     const tween = new Konva.Tween({
       node: node.children[0],
