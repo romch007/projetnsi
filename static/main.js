@@ -1,11 +1,19 @@
+// On crée un dictionnaire qui contiendra les noeuds
 const nodes = new Map();
+// On crée un set qui contiendra les relations
 const relations = new Set();
 
+// L'outil actuellement sélectioné
 let toolState = "idle";
+// Si la case orienté est cochée
 let toolOriented = false;
+// Si la case pondérée est cochée
 let toolWeighted = false;
+// La couleur actuelle du selecteur de couleur
 let hexNodeColor = "#808080";
+// Si l'utilisateur en est à sélection le premier noeud (outil nécessitant la sélection de deux noeuds)
 let relationStep = "first";
+// L'id du premier noeud sélectioné
 let startNodeId;
 
 // Définis la taille de kanvas (espace de dessin)
@@ -108,12 +116,14 @@ function makeCoords(startNode, endNode) {
  * @param {string} id L'id du noeud
  */
 function highlightNodeById(id) {
+  // On récupère le noeud
   const nodeGroup = nodes.get(id);
   const tween = new Konva.Tween({
     node: nodeGroup.children[0],
     duration: 0.1,
     shadowOpacity: 0.5
   });
+  // On lance l'animation
   tween.play();
 }
 
@@ -123,12 +133,14 @@ function highlightNodeById(id) {
  */
 function resetHighlight(ids) {
   for (const id of ids) {
+    // On récupère le noeud
     const nodeGroup = nodes.get(id);
     const tween = new Konva.Tween({
       node: nodeGroup.children[0],
       duration: 0.1,
       shadowOpacity: 0
     });
+    // On lance l'animation
     tween.play();
   }
 }
@@ -139,9 +151,12 @@ function resetHighlight(ids) {
  * @returns {number} L'id du noeud
  */
 function getGroupIdFromEvent(event) {
+  // On récupère le cercle ou le texte cliqué
   const circleOrText = event.target;
+  // On récupère le groupe parent
   const group = circleOrText.parent;
 
+  // On cherche son id
   nodeId = searchNodeId(group);
   return nodeId;
 }
@@ -153,13 +168,16 @@ function getGroupIdFromEvent(event) {
  */
 function relationAlreadyExists(relation) {
   for (const relationInSet of relations) {
+    // Pour chaque relation on vérifie si la relation donnée n'est pas la même
     if (relationInSet[0] == relation[0] && relationInSet[1] == relation[1]) {
       return relationInSet;
     } else if (
+      // Si la relation n'est pas orientée on vérifie de façon inverse
       !relation[2] &&
       relationInSet[0] == relation[1] &&
       relationInSet[1] == relation[0]
     ) {
+      // On retourne la relation trouvée
       return relationInSet;
     }
   }
@@ -173,6 +191,7 @@ function relationAlreadyExists(relation) {
  */
 function searchNodeId(nodeGroup) {
   for (const [id, group] of nodes) {
+    // On compare les ids Konva
     if (group._id == nodeGroup._id) {
       return id;
     }
@@ -186,9 +205,13 @@ function searchNodeId(nodeGroup) {
  */
 function deleteRelationsRelatedTo(nodeId) {
   for (const relation of relations) {
+    // Pour chaque relation on regarde si le noeud donné fait partie de la relation
     if (relation[0] == nodeId || relation[1] == nodeId) {
+      // On supprime le trait de la relation
       relation[3].remove();
+      // On supprime le texte s'il existe
       if (relation[4]) relation[4].remove();
+      // On retire la relation du set
       relations.delete(relation);
     }
   }
@@ -281,11 +304,14 @@ function drawNodeCircle(id, name, x, y, color) {
  * @param {number} weight Le poids de la relation
  */
 function drawRelation(startId, endId, oriented, weight) {
+  // On récupère les deux noeuds
   const startNode = nodes.get(startId);
   const endNode = nodes.get(endId);
 
+  // On crée un tableau qui sera inséré dans le set
   const relationSet = [];
 
+  // On crée un objet avec les arguments
   const options = {
     points: makeCoords(startNode, endNode),
     stroke: "black",
@@ -295,25 +321,32 @@ function drawRelation(startId, endId, oriented, weight) {
 
   let line;
 
+  // Si la relation est orientée, on utilise l'objet Arrow au lieu de Line
   if (oriented) {
     line = new Konva.Arrow(options);
   } else {
     line = new Konva.Line(options);
   }
 
+  // On ajoute la relation à la couche de dessin
   layer.add(line);
   line.moveToBottom();
+
   relationSet.push(startId, endId, oriented, line);
 
   let textGroup;
   if (weight != 1) {
+    // Si la relation est pondérée, on va créer un texte
     const roundedWeight = Math.round(weight);
+    // On compte le nombre de chiffre que contient le texte
     const digitCount = roundedWeight.toString().length;
+    // On crée le groupe
     textGroup = new Konva.Group({
       x: (startNode.x() + endNode.x()) / 2,
       y: (startNode.y() + endNode.y()) / 2
     });
     const width = 10 * digitCount;
+    // On crée le texte
     const text = new Konva.Text({
       text: roundedWeight.toString(),
       fill: "black",
@@ -325,6 +358,7 @@ function drawRelation(startId, endId, oriented, weight) {
       align: "center",
       verticalAlign: "middle"
     });
+    // On crée le rectangle blanc qui sera en dessous du texte (pour le faire ressortir)
     const rect = new Konva.Rect({
       fill: "white",
       width: text.width(),
@@ -332,6 +366,7 @@ function drawRelation(startId, endId, oriented, weight) {
       offsetX: text.offsetX(),
       offsetY: text.offsetY()
     });
+    // On les ajoute au groupe
     textGroup.add(text);
     textGroup.add(rect);
 
@@ -342,6 +377,7 @@ function drawRelation(startId, endId, oriented, weight) {
 
   relations.add(relationSet);
 
+  // On crée une fonction de fonction qui permettra de redessiner les relations
   const lineUpdateEvent = (startNode, endNode) => () => {
     line.points(makeCoords(startNode, endNode));
     if (weight != 1) {
@@ -350,10 +386,12 @@ function drawRelation(startId, endId, oriented, weight) {
     }
   };
 
+  // On redessine les relations quand la taille des noeuds change
   nodeRadiusSlider.addEventListener(
     "input",
     lineUpdateEvent(startNode, endNode)
   );
+  // On redessine les relations quand les noeuds sont bougés
   startNode.on("dragmove", lineUpdateEvent(startNode, endNode));
   endNode.on("dragmove", lineUpdateEvent(startNode, endNode));
 }
@@ -362,8 +400,10 @@ function drawRelation(startId, endId, oriented, weight) {
  * Redimensionne l'espace de dessin (Konvas)
  */
 function fitStageIntoParentContainer() {
+  // On récupère la div contenant le canvas
   const container = document.querySelector("#container");
 
+  // On redimensionne le canvas
   const containerWidth = container.offsetWidth;
   const scale = containerWidth / width;
 
@@ -371,18 +411,24 @@ function fitStageIntoParentContainer() {
   stage.draw();
 }
 
+// On redimenssione le canvas et on ajoute un évènement qui permettra de redimenssioner
+// le canvas quand la taille de la fenêtre change
 fitStageIntoParentContainer();
 window.addEventListener("resize", fitStageIntoParentContainer);
 
+// On récupère tous les noeuds grâce à l'api
 getAllNodes()
   .then(nodes => {
+    // Une fois la réponse reçue, on les dessine tous
     for (const node of nodes) {
       drawNodeCircle(node.id, node.name, node.x, node.y, node.color);
     }
 
+    // On récupère toutes le relations grâce à l'api
     return getAllRelations();
   })
   .then(relations => {
+    // Une fois la réponse reçue, on les dessine toutes
     for (const relation of relations) {
       drawRelation(
         relation.start_id,
