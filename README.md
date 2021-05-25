@@ -12,5 +12,3 @@ Lancer l'appli :
 ```shell
 flask run
 ```
-
-[Docs](docs/DOCS.md)

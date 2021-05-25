@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
     <meta charset='utf-8'>
@@ -17,23 +17,29 @@
 </head>
 
 <body>
+    <!-- Partie supérieure de l'écran -->
     <div class="topnav">
+        <!-- Premier groupe de boutons-->
         <div class="toolgroup">
             <div class="toolgrouptitle">Noeuds :</div>
+            <!-- Chaque bouton est récupéré sous forme d'objet dans le Javascript grâce à son id -->
             <button id="createnode" class="tool">Ajouter</button>
             <button id="editnode" class="tool">Renommer</button>
             <button id="deletenode" class="tool">Supprimer</button>
             <div class="node-radius">
                 <label for="taille">Taille</label>
+                <!-- Création du bouton pour choisir la taille des noeuds-->
                 <input type="range" id="node-radius-input" name="taille" min="5" max="50">
             </div>
             <div id="nodecolorwrapper">
                 <div class="colorrow">
                     <span>Couleur</span>
-                    <input id="nodecolor" type="color">
+                    <input id="nodecolor" type="color"> <!-- Création du bouton pour choisir la couleur des noeuds -->
                 </div>
             </div>
         </div>
+
+        <!-- Deuxieme groupe de boutons-->
         <div class="toolgroup">
             <div class="toolgrouptitle">Relations :</div>
             <button id="createrelation" class="tool">Ajouter</button>
@@ -50,6 +56,8 @@
             <button id="editrelation" class="tool">Modifier</button>
             <button id="deleterelation" class="tool">Supprimer</button>
         </div>
+
+        <!-- Troisième groupe de boutons-->
         <div class="toolgroup">
             <div class="toolgrouptitle">Algorithmes :</div>
             <button id="bfs" class="tool">Parcours en largeur</button>
@@ -58,6 +66,7 @@
         </div>
     </div>
 
+    <!-- Partie droite de l'écran-->
     <div class="right-column">
         <div class="algout">
             <p>Sortie de l'algorithme :</p>
@@ -68,6 +77,7 @@
             <textarea id="matrix-input" placeholder="Votre matrice"></textarea>
             <div>
                 <select id="exportselect">
+                    <!-- Crée le choix entre les deux boutons -->
                     <option value="matrix">Matrice d'adjacence</option>
                     <option value="list">Liste d'adjacence</option>
                 </select>
@@ -80,13 +90,15 @@
         </div>
     </div>
 
-    <div id="container"></div>
+    <div id="container"></div> <!-- Boite contenant le graphe -->
+    <!-- Ses dimensions sont spécifiées dans main.js et sont dynamiques -->
 
-    <div class="footer">
+    <div class="credits">
+        <!-- Crédits au pied de la page-->
         Application développée par:
-        Romin Chardini,
-        Batiste Julien,
-        Eliott Flavier
+        Romain Chardiny,
+        Baptiste Jullien,
+        Eliot Favier
     </div>
 </body>
 
