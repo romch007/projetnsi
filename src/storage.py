@@ -26,6 +26,7 @@ class Storage:
         # On initialise la connection avec la base de données
         self.connection = sqlite3.connect(filename)
         cursor = self.connection.cursor()
+        cursor.execute("PRAGMA foreign_keys = ON;")
         cursor.execute(schema[0])
         cursor.execute(schema[1])
         self.connection.commit()
