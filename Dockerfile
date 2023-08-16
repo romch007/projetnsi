@@ -1,5 +1,7 @@
 FROM python:3-alpine
 
+LABEL org.opencontainers.image.source="https://github.com/romch007/projetnsi"
+
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
