@@ -1,12 +1,20 @@
-FROM python:3.8-alpine
+FROM python:3-alpine
 
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+RUN pip3 install waitress
 
 COPY . .
 
-EXPOSE 80
+RUN adduser -D nonroot
+RUN mkdir /data
+RUN chown -R nonroot:nonroot /data
+USER nonroot
 
-CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=80"]
+ENV STORAGE=/data/projetnsi.db
+
+EXPOSE 8080
+
+CMD ["waitress-serve", "--host", "0.0.0.0", "app:app"]
