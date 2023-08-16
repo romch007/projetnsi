@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Docker image
     steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: romch007
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Docker images
         uses: docker/build-push-action@v4.1.1
         with:
