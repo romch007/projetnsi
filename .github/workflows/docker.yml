@@ -1,0 +1,17 @@
+name: docker
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    name: Build Docker image
+    steps:
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v4.1.1
+        with:
+          push: true
+          tags: ghcr.io/romch007/projetnsi:latest

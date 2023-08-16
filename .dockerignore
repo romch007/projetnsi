@@ -3,3 +3,4 @@ Dockerfile
 .git
 __pycache__
 data.sqlite
+.venv
